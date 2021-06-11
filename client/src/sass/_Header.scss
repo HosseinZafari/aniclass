@@ -1,0 +1,39 @@
+#main-header nav:first-child {
+    background-color: #6200EA;
+}
+
+#main-header nav:first-child .navbar-brand > .navbar-item > img{
+    max-height: 2.4rem;
+    background: white;
+    border-radius: .2rem;
+    width: 7.5rem;
+    height: 3rem;
+}
+
+#main-header nav:first-child .navbar-brand > .navbar-item {
+    transition: all .2s ease-in-out;
+}
+
+#main-header nav:first-child .navbar-brand > .navbar-item:hover {
+    opacity: .8;
+}
+
+#main-header nav:first-child .navbar-start {
+    margin-right: 2rem !important;
+}
+
+#main-header nav:first-child .navbar-start  .navbar-item{
+    transition: .3s all ease-in-out;
+    border-radius: .3rem;
+    height: 2.4rem;
+    padding: auto;
+    margin: auto .4rem;
+}
+
+#main-header nav:first-child .navbar-start > .navbar-item:hover{
+    color: #6200EA !important;
+}
+
+#main-header #navbarBasicExample {
+    
+}

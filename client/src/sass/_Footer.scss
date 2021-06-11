@@ -1,0 +1,16 @@
+#footer-main {
+    background-color: #263238;
+}
+
+#footer-main ul li {
+    line-height: 2rem;
+
+     a { 
+         color: #263238;
+        transition: .2s all ease-in-out;
+    } 
+}
+ 
+#footer-main ul li a:hover {
+    color: #6200EA !important;
+}
