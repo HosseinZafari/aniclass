@@ -15,7 +15,7 @@ const Reload = (props) => {
         const result = await AniClassApi("/" , {
             method: "GET"
         });
-        console.log("user Auth");
+        console.log("user Index");
 
         console.log(result.data.data);
         setUser(result.data.data);
