@@ -28,6 +28,7 @@ import {grey} from "@material-ui/core/colors";
 import TableContext from "@material-ui/core/Table/TableContext";
 import {ExitToApp, LockOpen, Visibility, VisibilityOff} from "@material-ui/icons";
 import {TabContext, TabPanel} from "@material-ui/lab";
+import RegisterDialog from "../component/Dialogs/RegisterDialog";
 
 const styles = makeStyles({
   root: {
@@ -64,9 +65,9 @@ const styles = makeStyles({
 
 const Auth = (props) => {
   const {primary} = useTheme().palette;
-  const classes = styles({background: primary.main});
   const [value, setValue] = useState(1);
-  const [showPass, setShowPass] = useState(false)
+  const [isShowDialog ,setIsShowDialog ] = useState(false);
+  const classes = styles({background: primary.main});
   const ref = useRef(null);
   
   // enable this to solve the error, you have to use a timeout in order for it to work
@@ -79,14 +80,6 @@ const Auth = (props) => {
   const selectedTab = (event, newValue) => {
     setValue(newValue)
   }
-  
-  const handleClickShowPassword = () => {
-    setShowPass(!showPass);
-  };
-  
-  const handleMouseDownPassword = (event) => {
-    event.preventDefault();
-  };
   
   return (
     <div className={`${classes.root} `}>
@@ -252,12 +245,17 @@ const Auth = (props) => {
                     <Button variant={'contained'}
                             color={'primary'}
                             fullWidth
-                            onClick={v => {}}
+                            onClick={v => setIsShowDialog(true)}
                             size={'large'}
                     >
                       ایجاد حساب کاربری
                       {/*<CircularProgress style={{marginRight: 10}} size={20} color={'white'} />*/}
                     </Button>
+                    <RegisterDialog
+                      onClose={() => setIsShowDialog(false)}
+                      open={isShowDialog}
+                      onSend={() => {}}
+                    />
                   </form>
                 </TabPanel>
               </Grid>
