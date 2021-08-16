@@ -8,30 +8,9 @@ import {CircularProgress, createTheme, LinearProgress} from "@material-ui/core";
 import {Container, ThemeProvider} from "@material-ui/core";
 import {amber, deepPurple, yellow} from "@material-ui/core/colors";
 import RTL from "./Rtl";
+import {MainTheme} from "./Themes";
 
 const App = (props) => {
-
-    const theme = createTheme({
-        direction: 'rtl',
-        typography: {
-            fontFamily: ["IRANSans" , "serif"].join(",") ,
-            fontSize: 12,
-        } ,
-        palette: {
-            primary: {
-                main: deepPurple[700],
-                light: deepPurple[400] ,
-            } ,
-            secondary: {
-                main: amber[600] ,
-                light: yellow[400],
-            }
-        } ,
-
-    });
-
-
-
 
     useEffect(() => {
   } , []);
@@ -47,7 +26,7 @@ const App = (props) => {
 
 
   return (
-    <ThemeProvider theme={theme}>
+    <ThemeProvider theme={MainTheme}>
         <RTL>
             <Router>
                 {/*<LinearProgress style={{width: '100%' , zIndex: 99999 , position: 'fixed' , top: 0 , right: 0 , left: 0}} color={'secondary'} />*/}
