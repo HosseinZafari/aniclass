@@ -1,13 +1,11 @@
 import React, {useContext} from 'react';
 import {withRouter , useHistory} from 'react-router-dom';
-import {UserContext} from "../context/UserContext";
 import {convertProgressLengthToPercent, useQuery} from "./Useful";
 import AniClassApi from "../apis/AniClassApi";
-import {LoadingContext} from "../context/LoadingContext";
 
 const Reload = (props) => {
-    const {user , setUser} = useContext(UserContext);
-    const {percent , setPercent} = useContext(LoadingContext);
+    const {user , setUser} = useContext('0');
+    const {percent , setPercent} = useContext(0);
     const query  =  useQuery();
     const history = useHistory();
 

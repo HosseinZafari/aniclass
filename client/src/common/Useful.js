@@ -21,3 +21,8 @@ Array.prototype.removeValue = function(name, value){
         }
     });
 }
+
+export const copyToClipboard = (text , onSuccess) => {
+    navigator.clipboard.writeText(text)
+      .then(r => onSuccess())
+}

@@ -116,8 +116,9 @@ ul li {
 }
 
 ::-webkit-scrollbar{
-    width: 4px;
-    height: 4px;
+    width: 0 ;
+    height: 0 ;
+    z-index: 9999;
 }
 ::-webkit-scrollbar-thumb{
     background: #B3AFB3;
