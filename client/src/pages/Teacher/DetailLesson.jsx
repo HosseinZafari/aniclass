@@ -1,17 +1,14 @@
-import StudentAppBar from "../../component/AppBars/StudentAppBar";
 import {
   Box,
   Grid,
-  Grow,
   makeStyles,
   Slide,
   Typography,
   useMediaQuery,
-  Zoom
 } from "@material-ui/core";
 import {useParams} from 'react-router-dom'
 import {MainTheme} from "../../Themes";
-import SessionTable from "../../component/Tables/Student/SessionTable";
+import SessionTable from "../../component/Tables/Teacher/SessionTable";
 import TeacherAppBar from "../../component/AppBars/TeacherAppBar";
 
 const Styles = makeStyles((theme) => ({
@@ -60,10 +57,10 @@ const Styles = makeStyles((theme) => ({
 
 const rows = () => {
   return [
-    {title: 'جلسه اول سیستم عامل' , time: '20:00' , date: '1400/7/5' , link: 'https://google.com/'},
-    {title: 'جلسه اول سیستم عامل' , time: '20:00' , date: '1400/7/5' , link: 'https://google.com/'},
-    {title: 'جلسه اول سیستم عامل' , time: '20:00' , date: '1400/7/5' , link: 'https://google.com/'},
-    {title: 'جلسه اول سیستم عامل' , time: '20:00' , date: '1400/7/5' , link: 'https://google.com/'},
+    {id: 1 , title: 'جلسه اول سیستم عامل' , time: '20:00' , date: '1400/7/5' , link: 'https://google.com/'},
+    {id: 13 , title: 'جلسه اول سیستم عامل' , time: '20:00' , date: '1400/7/5' , link: 'https://google.com/'},
+    {id: 14 , title: 'جلسه اول سیستم عامل' , time: '20:00' , date: '1400/7/5' , link: 'https://google.com/'},
+    {id: 15 , title: 'جلسه اول سیستم عامل' , time: '20:00' , date: '1400/7/5' , link: 'https://google.com/'},
   ]
 }
 
@@ -76,7 +73,7 @@ const DetailLesson = (props) => {
   
   
   return (
-    <StudentAppBar active={navigation} title={'جزییات کلاس'}>
+    <TeacherAppBar active={navigation} title={'جزییات کلاس'} detailLesson={true}>
       
       <Slide in={true}>
         <Grid container justifyContent={'space-between'} style={{position: 'relative'}}>
@@ -136,13 +133,13 @@ const DetailLesson = (props) => {
           
           </Box>
           
-          <Grid item xs={12} md={5}  style={{marginTop: 5}}>
+          <Grid item xs={12} md={5}  style={{marginTop: md && 10 , marginBottom: md && 10}}>
             <SessionTable rows={rows()} />
           </Grid>
         </Grid>
       </Slide>
     
-    </StudentAppBar>
+    </TeacherAppBar>
   )
 }
 

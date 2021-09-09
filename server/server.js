@@ -32,7 +32,7 @@ const configSession = {
   secret: process.env.SECRET_SESSION , 
   name: "__susId" , 
   saveUninitialized: true ,
-  store: new FileStore(),
+  store: new FileStore()  ,
   resave: true ,
   cookie: {
     maxAge: common.getMiliSecOfDays(21) ,

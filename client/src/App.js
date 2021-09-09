@@ -1,6 +1,6 @@
 import {BrowserRouter as Router, Switch, Route, useLocation} from "react-router-dom";
 import {convertProgressLengthToPercent} from "./common/Useful";
-import Routes from "./Route.jsx";
+import Routes from "./Routes/Route.jsx";
 import ScrollTop from "./common/ScrollTop";
 import {React, useState, useEffect, useContext} from "react";
 import AniClassApi from './apis/AniClassApi';
@@ -13,9 +13,15 @@ import {useDispatch, useSelector} from "react-redux";
 import {
   selectProgressbarState
 } from "./redux/reducers/ProgressbarSlice";
+import {userSelector} from "./redux/reducers/UserSlice";
+import {MuiPickersUtilsProvider} from "@material-ui/pickers";
+import JalaliUtils from "@date-io/jalaali";
+import JMoment from 'moment-jalaali'
+JMoment.loadPersian({dialect: "persian-modern", usePersianDigits: true})
 
 const App = (props) => {
   const progressbarState = useSelector(selectProgressbarState)
+  const userState = useSelector(userSelector)
   
   useEffect(() => {
   }, []);
@@ -32,23 +38,24 @@ const App = (props) => {
   
   return (
     <ThemeProvider theme={MainTheme}>
-      <RTL>
-        <Router>
-          {
-            progressbarState &&
-            <LinearProgress style={{
-              width: '100%',
-              zIndex: 99999,
-              position: 'fixed',
-              top: 0,
-              right: 0,
-              left: 0
-            }} color={'secondary'}/>
-          }
-          <ScrollTop/>
-          <Routes/>
-        </Router>
-      </RTL>
+      <MuiPickersUtilsProvider utils={JalaliUtils} locale="fa">
+        <RTL>
+          <Router>
+            {
+              progressbarState && <LinearProgress style={{
+                width: '100%',
+                zIndex: 99999,
+                position: 'fixed',
+                top: 0,
+                right: 0,
+                left: 0
+              }} color={'secondary'}/>
+            }
+            <ScrollTop/>
+            <Routes user={userState}/>
+          </Router>
+        </RTL>
+      </MuiPickersUtilsProvider>
     </ThemeProvider>
   );
 }

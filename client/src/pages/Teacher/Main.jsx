@@ -1,32 +1,23 @@
-import {
-  Box,
-  Grid, Grow,
-  makeStyles, Slide, Typography, Zoom,
-} from "@material-ui/core";
-import {importFromPublic} from "../../common/Useful";
+import {Grid, makeStyles, Slide} from "@material-ui/core";
 import DashboardCard from "../../component/Cards/DashboardCard";
+import {importFromPublic} from "../../common/Useful";
 import TeacherAppBar from "../../component/AppBars/TeacherAppBar";
 
 const Styles = makeStyles((theme) => ({
   root: {},
 }));
 
-
 const Main = () => {
   const classes = Styles()
-  console.log('testttt')
   
   return (
     <TeacherAppBar active={1} title={'صفحه اصلی'}>
       <Slide in={true}>
         <Grid justifyContent={'space-between'} textAlign={'center'} direction={'row'} container>
           <DashboardCard image={importFromPublic('images/homework1-min.jpg')}
-                         title='کلاس های من'
+                         title='کلاس های ایجاد شده'
                          link={'/lesson/'}
-                         text='تعداد کلاس های ثبت نام شده : (10)'/>
-          <DashboardCard image={importFromPublic('images/homework4-min.jpg')}
-                         link={'/session/'}
-                         title='جلسات'/>
+                         text='تعداد کلاس های ایجاد شده : (10)'/>
           <DashboardCard image={importFromPublic('images/homework2-min.jpg')}
                          link={'/search/'}
                          title='جستجو'/>
@@ -41,5 +32,6 @@ const Main = () => {
     </TeacherAppBar>
   )
 }
+
 
 export default Main

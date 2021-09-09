@@ -3,7 +3,7 @@ const {createSlice} = require("@reduxjs/toolkit");
 const initialState = {
     id: 51,
     nationalCode: 152126578,
-    role: "student",
+    role: "teacher",
     name: "Hossein",
     family: "Zafari",
     email: "hosseinzafari2000@gmail.com",

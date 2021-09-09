@@ -1,26 +1,30 @@
 import {Route, Switch} from 'react-router-dom';
 import Reload from "../common/Reload";
 import Auth from "../pages/Auth";
-import Main from "../pages/Student/Main";
-import Search from "../pages/Student/Search";
-import Lesson from "../pages/Student/Lesson";
-import DetailLesson from "../pages/Student/DetailLesson";
-import Setting from "../pages/Student/Setting";
 import PrivateRoute from "./PrivateRoute";
-
+import LoadLib from "../common/LoadLib";
+import {Suspense} from "react";
+import {CircularProgress, LinearProgress} from "@material-ui/core";
 
 const Routes = (props) => {
+  const Main = LoadLib(props.user.role , import('../pages/Student/Main.jsx') ,import('../pages/Teacher/Main.jsx'))
+  const Search = LoadLib(props.user.role , import('../pages/Student/Search') ,import('../pages/Teacher/Search'))
+  const Lesson = LoadLib(props.user.role , import('../pages/Student/Lesson') ,import('../pages/Teacher/Lesson'))
+  const Setting = LoadLib(props.user.role , import('../pages/Student/Setting') ,import('../pages/Teacher/Setting'))
+  const DetailLesson = LoadLib(props.user.role , import('../pages/Student/DetailLesson') ,import('../pages/Teacher/DetailLesson'))
   
   return (
-    <Switch>
-      <Route path="/reload" component={Reload}/>
-      <Route exact path="/auth/" component={Auth}/>
-      <PrivateRoute isLogin={props.user.isLogin} exact path="/" component={Main}/>
-      <PrivateRoute isLogin={props.user.isLogin} exact path="/search/" component={Search}/>
-      <PrivateRoute isLogin={props.user.isLogin} exact path="/lesson/" component={Lesson}/>
-      <PrivateRoute isLogin={props.user.isLogin} exact path="/setting/" component={Setting}/>
-      <PrivateRoute isLogin={props.user.isLogin} exact path={"/lesson/:id"} component={DetailLesson}/>
-    </Switch>
+    <Suspense fallback={<CircularProgress style={{position: 'fixed' , inset: '50%'  , zIndex: 99999 , width: 30 , height: 30}}/>}>
+      <Switch>
+        <Route path="/reload" component={Reload}/>
+        <Route exact path="/auth/" component={Auth}/>
+        <PrivateRoute isLogin={props.user.isLogin} exact path="/" component={Main}/>
+        <PrivateRoute isLogin={props.user.isLogin} exact path="/search/" component={Search}/>
+        <PrivateRoute isLogin={props.user.isLogin} exact path="/lesson/" component={Lesson}/>
+        <PrivateRoute isLogin={props.user.isLogin} exact path="/setting/" component={Setting}/>
+        <PrivateRoute isLogin={props.user.isLogin} exact path={"/lesson/:id"} component={DetailLesson}/>
+      </Switch>
+    </Suspense>
   );
 }
 

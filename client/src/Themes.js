@@ -1,6 +1,5 @@
 import {createTheme} from "@material-ui/core";
 import {amber, deepPurple, yellow} from "@material-ui/core/colors";
-import {palette} from "@material-ui/system";
 
 export const MainTheme = createTheme({
   direction: 'rtl',
