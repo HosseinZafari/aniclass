@@ -1,6 +1,7 @@
 client/node_modules
 client/scripts/flow/*/.flowconfig
 client/.flowconfig
+server/node_modules
 *~
 client/*.pyc
 client/.grunt
