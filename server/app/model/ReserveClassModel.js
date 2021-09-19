@@ -1,26 +1,23 @@
-module.exports =  class ReserveModel {
+const { query } = require('../boot')
 
+module.exports =  class ReserveClassModel {
 
-    constructor(db) {
-        this.db = db;
-    }
-
-    reserveClass = async ({student_id , class_id}) => {
+    static reserveClass = async (studentId , classId) => {
         try {
-            const result = await this.db.pool.query("INSERT INTO class_reserved_tb (student_tb_id , class_tb_id) VALUES($1 , $2) RETURNING id" , [student_id , class_id]);
-            if(result.rows.length > 0) 
-                return {status: 'success' , id: result.rows[0].id};
-            else 
-                return {status: 'error'};
+            const result = await query("INSERT INTO class_reserved_tb (student_tb_id , class_tb_id) VALUES($1 , $2) RETURNING id" , [studentId , classId]);
+            if(result.rows.length > 0)
+                return true
+            else
+                return false
         } catch(err) {
             console.log(err.message);
-            return {status: 'error'};
+            return false;
         }
     }
 
-    getReservedClass = async ({student_id , class_id}) => {
+   static getReservedClass = async ({student_id , class_id}) => {
         try {
-            const result = await this.db.pool.query("SELECT * FROM class_reserved_tb WHERE class_reserved_tb.student_tb_id=$1 AND class_reserved_tb.class_tb_id=$2;" , [student_id , class_id]);
+            const result = await query("SELECT * FROM class_reserved_tb WHERE class_reserved_tb.student_tb_id=$1 AND class_reserved_tb.class_tb_id=$2;" , [student_id , class_id]);
             if(result.rows.length > 0)
                 return {status: 'success' , data: true};
             else
@@ -45,7 +42,7 @@ module.exports =  class ReserveModel {
         }
     }
 
-    getAllReservedClass = async (student_id) => {
+   static getAllReservedClass = async (studentId) => {
         try {
             const query = "SELECT sub.id  as id,\n" +
                 "       class_id,\n" +
@@ -66,14 +63,14 @@ module.exports =  class ReserveModel {
                 "         JOIN department_tb ON department_tb.id = department_id\n" +
                 "         JOIN teacher_tb ON teacher_tb.id = teacher_id;";
 
-            const result = await this.db.pool.query(query , [student_id]);
+            const result = await query(query , [studentId]);
             if(result.rows.length > 0)
-                return {status: 'success' , data: result.rows};
+                return result.rows
             else
-                return {status: 'error' , data: null};
+                return false
         } catch(err) {
             console.log(err.message);
-            return {status: 'error'};
+            return false
         }
     }
 }
