@@ -5,7 +5,6 @@ module.exports = class UniversityModel {
     getUniversityByQrcode = async ({qrcode}) => {
         try {
             const result = await query("SELECT id FROM university_tb WHERE qrcode=$1" , [qrcode])
-            console.log(result)
             return result.rowCount > 0 ? result.rows[0] : false;
         } catch(err) {
             console.log(err)

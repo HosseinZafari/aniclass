@@ -72,12 +72,17 @@ const studentLogin = async (req , res , next) => {
     return
   }
   
-  const {id , national_code , name , family , email , m_uuid} = result
+  const {id , national_code: nationalCode , name: firstName , family: lastName , email } = result
   res.status(200).send({
     status: 'success',
     msg: 'به پنل کاربری خود خوش آمدید',
     code: 200 ,
-    rows: { id , national_code , name , family , email , m_uuid } ,
+    id ,
+    role: "student",
+    nationalCode ,
+    firstName ,
+    lastName ,
+    email ,
     token
   })
 }
@@ -104,7 +109,7 @@ const studentRegister = async (req, res, next) => {
     return
   }
   
-  const userCreated = await userModel.createStudent(req.body)
+  const userCreated = await userModel.createStudent(req.body , new Date())
   if (!userCreated) {
     next(new Error('مشکلی در ثبت نام وجود دارد لطفا بعدا امتحان کنید'))
     return
@@ -129,12 +134,15 @@ const studentRegister = async (req, res, next) => {
   
   res.status(202).send({
     status: 'success',
+    msg: "به پنل کاربری خود خوش آمدید" ,
     id: userCreated,
+    role: "student" ,
     nationalCode: req.body.nationalCode,
     firstName: req.body.firstName,
     lastName: req.body.lastName,
     email: req.body.email,
     token,
+    code: 200
   })
 }
 

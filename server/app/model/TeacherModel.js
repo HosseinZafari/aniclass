@@ -7,11 +7,11 @@ module.exports = class TeacherModel {
     }
 
 
-    createTeacher  = async ({  nationalCode , firstName , lastName , email , password}) => {
+    createTeacher  = async ({  nationalCode , firstName , lastName , email , password } , registerTime) => {
         try {
             const passwordHashed = await this.bycrypt.hash(password ,parseInt(process.env.SALT_ROUND));
-            const result = await this.db.pool.query("INSERT INTO teacher_tb(national_code , name , family , email , password) VALUES($1 , $2 , $3 ,$4 , $5) RETURNING id;" , [
-                nationalCode , firstName , lastName , email , passwordHashed
+            const result = await query("INSERT INTO teacher_tb(national_code , name , family , email , password , createdat) VALUES($1 , $2 , $3 ,$4 , $5 , $6) RETURNING id;" , [
+                nationalCode , firstName , lastName , email , passwordHashed , registerTime
             ]);
 
             if(result.rows == null) {
@@ -50,22 +50,22 @@ module.exports = class TeacherModel {
         }
     }
 
-    loginTeacher = async ({ national_code , password }) => {
+    loginTeacher = async ({ nationalCode , password }) => {
         try {
-            const result = await this.db.pool.query("SELECT * FROM teacher_tb WHERE national_code=$1 ;" , [national_code]);
+            const result = await query("SELECT * FROM teacher_tb WHERE national_code=$1;" , [nationalCode]);
             if(result.rows.length < 1) {
-                return { status: "NOT_FOUND" };
+                return "NOT_FOUND";
             }
-
+        
             const isValid = await this.bycrypt.compare(password , result.rows[0].password);
             if(isValid) {
-                return { status: "SUCCESS" , rows: result.rows };
+                return result.rows[0]
             }
-
-            return { status: "PASSWORD" };
+        
+            return "WRONG_PASSWORD"
         } catch(ex) {
             console.log(ex.message);
-            return { status: "ERROR" };
+            return "ERROR"
         }
     }
 

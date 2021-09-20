@@ -42,8 +42,21 @@ module.exports = class DeviceModel {
   
   
   
-  static newDeviceTeacher({teacherId , ip , mac , token , deviceName , lastAccess , }) {
-  
+  static async newDeviceTeacher(teacherId , ip  , token , deviceName , lastAccess) {
+    try {
+      const result = await query("INSERT INTO device_teacher_tb(\"teacherId\", ip ,  token ,\"deviceName\" , \"lastAccess\" ) VALUES($1 , $2 , $3 ,$4 , $5) RETURNING id;" , [
+        teacherId , ip  , token , deviceName , lastAccess
+      ]);
+    
+      if(result.rows == null) {
+        return false;
+      }
+    
+      return result.rows[0].id;
+    } catch(ex) {
+      console.log(ex.message);
+      return false
+    }
   }
   
 }

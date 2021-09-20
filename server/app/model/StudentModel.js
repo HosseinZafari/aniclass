@@ -16,11 +16,11 @@ module.exports = class StudentModel {
         }
     }
     
-    createStudent  = async ({ nationalCode , firstName , lastName , email , password }) => {
+    createStudent  = async ({ nationalCode , firstName , lastName , email , password } , registerTime) => {
         try {
             const passwordHashed = await this.bycrypt.hash(password ,parseInt(process.env.SALT_ROUND));
-            const result = await query("INSERT INTO student_tb(national_code , name , family , email , password) VALUES($1 , $2 , $3 ,$4 , $5) RETURNING id;" , [
-                nationalCode , firstName , lastName , email , passwordHashed
+            const result = await query("INSERT INTO student_tb(national_code , name , family , email , password , createdat) VALUES($1 , $2 , $3 ,$4 , $5 , $6) RETURNING id;" , [
+                nationalCode , firstName , lastName , email , passwordHashed , registerTime
             ]);
 
             if(result.rows == null) {
