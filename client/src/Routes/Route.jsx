@@ -1,6 +1,6 @@
 import {Route, Switch} from 'react-router-dom';
+import React from 'react'
 import Reload from "../common/Reload";
-import Auth from "../pages/Auth";
 import PrivateRoute from "./PrivateRoute";
 import LoadLib from "../common/LoadLib";
 import {Suspense} from "react";
@@ -12,12 +12,16 @@ const Routes = (props) => {
   const Lesson = LoadLib(props.user.role , import('../pages/Student/Lesson') ,import('../pages/Teacher/Lesson'))
   const Setting = LoadLib(props.user.role , import('../pages/Student/Setting') ,import('../pages/Teacher/Setting'))
   const DetailLesson = LoadLib(props.user.role , import('../pages/Student/DetailLesson') ,import('../pages/Teacher/DetailLesson'))
+  const Auth = React.lazy(() => import('../pages/Auth'))
   
   return (
     <Suspense fallback={<CircularProgress style={{position: 'fixed' , inset: '50%'  , zIndex: 99999 , width: 30 , height: 30}}/>}>
       <Switch>
         <Route path="/reload" component={Reload}/>
-        <Route exact path="/auth/" component={Auth}/>
+        {
+          !props.user.isLogin ? (<Route exact path="/auth/" component={Auth}/>) : (<Route exact path="/" component={Main}/>)
+        }
+        
         <PrivateRoute isLogin={props.user.isLogin} exact path="/" component={Main}/>
         <PrivateRoute isLogin={props.user.isLogin} exact path="/search/" component={Search}/>
         <PrivateRoute isLogin={props.user.isLogin} exact path="/lesson/" component={Lesson}/>

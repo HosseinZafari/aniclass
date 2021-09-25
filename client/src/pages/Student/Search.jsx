@@ -9,13 +9,12 @@ import DashboardCard from "../../component/Cards/DashboardCard";
 import {ExpandMore, Share} from "@material-ui/icons";
 import {grey} from "@material-ui/core/colors";
 import ClassItemCard from "../../component/Cards/ClassItemCard";
-import SimpleSnackbar from "../../component/Notify/SimpleSnackbar";
 import {useEffect} from "react";
 
 const Styles = makeStyles((theme) => ({
   root: {
   
-    
+  
   },
   
 }));

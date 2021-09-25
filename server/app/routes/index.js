@@ -13,9 +13,11 @@ const {
   schemaLoginTeacher
 } = require('../schema')
 const auth = require('../middleware/auth')
-const {} = require('../schema')
+const userController = require('../controller/UserController')
 
 module.exports = (app) => {
+  // Get User Info
+  app.get('/api/v1/authentication' , [auth] , userController.authentication)
   // Student
   app.post('/api/v1/student/register', schemaRegisterStudent, studentController.studentRegister)
   app.post('/api/v1/student/login', schemaLoginStudent, studentController.studentLogin)

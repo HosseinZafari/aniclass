@@ -5,17 +5,16 @@ import {useState} from "react";
 const SimpleSnackbar = ({
                           message = 'test',
                           duration = 4_000,
-                          show = false,
+                          show = true,
                           color = 'success',
                           transitionComponent = Slide,
-                          isShow ,
-                          setIsShow,
+                          onClose ,
                         }) => {
   
   return (
-    <Snackbar open={isShow} onClose={() => setIsShow()} autoHideDuration={duration}
+    <Snackbar open={show} onClose={() => onClose()} autoHideDuration={duration}
               TransitionComponent={transitionComponent}>
-      <Alert onClose={() => setIsShow()} severity={color}>
+      <Alert onClose={() => onClose()} severity={color}>
         {message}
       </Alert>
     </Snackbar>

@@ -9,6 +9,18 @@ export const convertProgressLengthToPercent = (loaded , total) => {
     return loaded * 100 / total;
 }
 
+export const getInfo = () => {
+    const info = {}
+    info.token = localStorage.getItem('$ecret' )
+    info.isTeacher = localStorage.getItem('ist') !== '0'
+    return info
+}
+
+export const setInfo = (token , isTeacher= '0') => {
+    localStorage.setItem('$ecret' , token )
+    localStorage.setItem('ist' , isTeacher)
+}
+
 export const isEnableProgressBar = percent => !Array.isArray(percent)
 export function useQuery() {
     return new URLSearchParams(useLocation().search);

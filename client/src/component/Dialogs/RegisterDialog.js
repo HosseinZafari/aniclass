@@ -1,4 +1,4 @@
-import React  from 'react';
+import React, { useState } from 'react'
 import {
   Button,
   Dialog,
@@ -10,6 +10,8 @@ import {
 import {PrimaryButton, SecondaryTextButton} from "../Button/Buttons";
 
 const RegisterDialog = (props) =>  {
+  const [value , setValue] = useState('')
+  
   return (
     <Dialog open={props.open} onClose={props.onClose} aria-labelledby={'Register User'}>
       <DialogTitle>
@@ -22,6 +24,7 @@ const RegisterDialog = (props) =>  {
         </DialogContentText>
         <TextField
           id={'secure_code'}
+          onChange={v => setValue(v.target.value)}
           autoFocus
           margin={'dense'}
           fullWidth
@@ -29,8 +32,10 @@ const RegisterDialog = (props) =>  {
         />
       </DialogContent>
       
-      <DialogActions style={{margin: 10}}>
-        <Button variant={'contained'} color={'primary'} onSend={props.onSend}> ثبت کد امنیتی</Button>
+      <DialogActions style={{margin: 10}} onSubmit={(v) => {
+        v.preventDefault()
+      }}>
+        <Button variant={'contained'} onClick={(v) => props.onSend(value)} color={'primary'}> ثبت کد امنیتی</Button>
         <Button variant={'text'} color={'default'} onClick={props.onClose}>لغو</Button>
       </DialogActions>
     </Dialog>

@@ -1,77 +1,28 @@
 import React, {useContext} from 'react';
 import {withRouter , useHistory} from 'react-router-dom';
 import {convertProgressLengthToPercent, useQuery} from "./Useful";
-import AniClassApi from "../apis/AniClassApi";
+import Index from "../apis";
 
 const Reload = (props) => {
-    const {user , setUser} = useContext('0');
-    const {percent , setPercent} = useContext(0);
     const query  =  useQuery();
     const history = useHistory();
 
-    const userAuth = async (params) => {
-        const result = await AniClassApi("/" , {
-            method: "GET"
-        });
-        console.log("user Index");
-
-        console.log(result.data.data);
-        setUser(result.data.data);
-        switch (params) {
-            case 'login':
-            history.push('/?loggind=true');
-            break;
-
-            case 'register':
-            history.push('/?registerd=true');
-            break;
-
-            case 'updated':
-            history.push('/?updated=true');
-            break;
-        }
-    };
 
     if(query.get('clear')) {
-        setUser('');
-        history.push('/');
-        console.log('clearrrr');
+        history.push('/?logout=1');
     }
 
     if(query.get('register')) {
-        console.log('seeeeeeeeeet');
-        setPercent(0);
-        try {
-            userAuth('register');
-        } catch(err) {
-            console.log(err);
-        } finally {
-            setPercent(100);
-        }
+        console.log('register')
+        history.push('/');
     }
 
     if(query.get('login')) {
-        console.log('logiiin');
-        try {
-            setPercent(0)
-            userAuth('login');
-            setPercent(100)
-        } catch(err) {
-            console.log(err);
-            setPercent(100)
-        }
+        history.push('/');
     }
 
     if(query.get('updated')) {
-        console.log('udpateddd');
-        try {
-            setPercent(0)
-            userAuth('updated');
-            setPercent(100)
-        } catch(err) {
-            console.log(err);
-            setPercent(100)
-        }
+        history.push('/?update=1');
     }
 
     return null;

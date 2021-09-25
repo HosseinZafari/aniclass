@@ -4,7 +4,7 @@ import {
   Button, CircularProgress,
   Container,
   createStyles,
-  FormControl,
+  FormControl, FormControlLabel, FormGroup,
   Grid,
   Grow,
   IconButton,
@@ -13,21 +13,30 @@ import {
   InputLabel,
   LinearProgress,
   makeStyles,
-  OutlinedInput, Slide,
+  OutlinedInput, Slide, Switch,
   Tab,
   Tabs,
   TextField,
   Typography,
   useTheme,
   Zoom
-} from "@material-ui/core";
+} from '@material-ui/core'
 import {PrimaryButton, SecondaryButton} from "../component/Button/Buttons";
-import {importFromPublic} from "../common/Useful";
+import { importFromPublic, setInfo } from '../common/Useful'
 import {grey} from "@material-ui/core/colors";
 import TableContext from "@material-ui/core/Table/TableContext";
-import {ExitToApp, LockOpen, Visibility, VisibilityOff} from "@material-ui/icons";
+import { CheckBox, ExitToApp, LockOpen, Visibility, VisibilityOff } from '@material-ui/icons'
 import {TabContext, TabPanel} from "@material-ui/lab";
 import RegisterDialog from "../component/Dialogs/RegisterDialog";
+import SimpleSnackbar from '../component/Notify/SimpleSnackbar'
+import Index from '../apis'
+import { studentLogin } from '../apis/AuthApi'
+import { useDispatch } from 'react-redux'
+import { disableProgressbar, enableProgressbar } from '../redux/reducers/ProgressbarSlice'
+import { setUser } from '../redux/reducers/UserSlice'
+import { useHistory } from 'react-router-dom'
+import LoginLayout from '../component/Layout/LoginLayout'
+import SignupLayout from '../component/Layout/SignupLayout'
 
 const styles = makeStyles({
   root: {
@@ -65,10 +74,11 @@ const styles = makeStyles({
 const Auth = (props) => {
   const {primary} = useTheme().palette;
   const [value, setValue] = useState(1);
-  const [isShowDialog ,setIsShowDialog ] = useState(false);
   const classes = styles({background: primary.main});
   const ref = useRef(null);
   
+  const history = useHistory()
+  const dispatch = useDispatch()
   // enable this to solve the error, you have to use a timeout in order for it to work
   useEffect(() => {
     setTimeout(() => {
@@ -79,6 +89,7 @@ const Auth = (props) => {
   const selectedTab = (event, newValue) => {
     setValue(newValue)
   }
+  
   
   return (
     <div className={`${classes.root} `}>
@@ -145,117 +156,22 @@ const Auth = (props) => {
               
               <Grid sx={12} item>
                 <TabPanel value={1}>
-                  <form className={classes.form} autoComplete={false}>
-                    <TextField id={'national_code'}
-                               fullWidth={true}
-                               type={'number'}
-                               autoComplete={false}
-                               size={'small'}
-                               className={classes.inputItem}
-                               variant={'outlined'}
-                               label={'کد ملی'}/>
-                    
-                    
-                    <TextField
-                      id="standard-adornment-password"
-                      variant={'outlined'}
-                      size={'small'}
-                      autoComplete={false}
-                      className={classes.inputItem}
-                      fullWidth={true}
-                      label={'رمز عبور'}
-                      type={'password'}
-                    />
-                    
-                    <Button variant={'contained'}
-                            color={'primary'}
-                            fullWidth
-                    
-                            size={'large'}
-                    >
-                      ورود به حساب کاربری
-                      
-                      {/*<CircularProgress style={{marginRight: 10}} size={20} color={'white'} />*/}
-                    </Button>
-                    
-                    <Button variant={'text'}
-                            style={{marginTop: -20, color: '#555'}}
-                            fullWidth
-                            size={'large'}
-                    >
-                      رمز عبور خود را فراموش کرده اید ؟
-                    
-                    </Button>
-                  </form>
+                 <LoginLayout onSuccess={(data) => {
+                   if (dispatch(setUser({ ...data , isLogin: true }))) {
+                     setInfo(data.token)
+                     history.push('/reload?login=1')
+                   }
+                 }} />
                 </TabPanel>
                 
+                
                 <TabPanel value={2}>
-                  <form className={classes.form} autoComplete={false}>
-                    <TextField id={'national_code'}
-                               fullWidth={true}
-                               type={'number'}
-                               autoComplete={false}
-                               className={classes.inputItem}
-                               size={'small'}
-                               variant={'outlined'}
-                               label={'کد ملی'}/>
-                    <TextField id={'name'}
-                               fullWidth={true}
-                               size={'small'}
-                               autoComplete={false}
-                               className={classes.inputItem}
-                               variant={'outlined'}
-                               label={'نام'}/>
-                    <TextField id={'family'}
-                               fullWidth={true}
-                               size={'small'}
-                               autoComplete={false}
-                               className={classes.inputItem}
-                               variant={'outlined'}
-                               label={'نام خانوادگی'}/>
-                    <TextField id={'email'}
-                               fullWidth={true}
-                               size={'small'}
-                               type={'email'}
-                               autoComplete={false}
-                               className={classes.inputItem}
-                               variant={'outlined'}
-                               label={'ایمیل'}/>
-                    <TextField
-                      id="password"
-                      variant={'outlined'}
-                      size={'small'}
-                      autoComplete={false}
-                      className={classes.inputItem}
-                      fullWidth={true}
-                      label={'رمز عبور'}
-                      type={'password'}/>
-                    
-                    <TextField
-                      id="confirm-password"
-                      variant={'outlined'}
-                      autoComplete={false}
-                      className={classes.inputItem}
-                      fullWidth={true}
-                      label={'تکرار رمز عبور'}
-                      size={'small'}
-                      type={'password'}/>
-                    
-                    <Button variant={'contained'}
-                            color={'primary'}
-                            fullWidth
-                            onClick={v => setIsShowDialog(true)}
-                            size={'large'}
-                    >
-                      ایجاد حساب کاربری
-                      {/*<CircularProgress style={{marginRight: 10}} size={20} color={'white'} />*/}
-                    </Button>
-                    <RegisterDialog
-                      onClose={() => setIsShowDialog(false)}
-                      open={isShowDialog}
-                      onSend={() => {}}
-                    />
-                  </form>
+                  <SignupLayout onSuccess={(data) => {
+                    if(dispatch(setUser({...data , isLogin: true}))){
+                      setInfo(data.token)
+                      history.push('/reload?register=1')
+                    }
+                  }}/>
                 </TabPanel>
               </Grid>
             

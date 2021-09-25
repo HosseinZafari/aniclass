@@ -6,6 +6,7 @@ import {
 import {importFromPublic} from "../../common/Useful";
 import DashboardCard from "../../component/Cards/DashboardCard";
 import TeacherAppBar from "../../component/AppBars/TeacherAppBar";
+import StudentAppBar from '../../component/AppBars/StudentAppBar'
 
 const Styles = makeStyles((theme) => ({
   root: {},
@@ -17,7 +18,7 @@ const Main = () => {
   console.log('testttt')
   
   return (
-    <TeacherAppBar active={1} title={'صفحه اصلی'}>
+    <StudentAppBar active={1} title={'صفحه اصلی'}>
       <Slide in={true}>
         <Grid justifyContent={'space-between'} textAlign={'center'} direction={'row'} container>
           <DashboardCard image={importFromPublic('images/homework1-min.jpg')}
@@ -38,7 +39,7 @@ const Main = () => {
                          text={'بزودی'}/>
         </Grid>
       </Slide>
-    </TeacherAppBar>
+    </StudentAppBar>
   )
 }
 

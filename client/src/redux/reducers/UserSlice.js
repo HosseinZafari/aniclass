@@ -1,27 +1,27 @@
 const {createSlice} = require("@reduxjs/toolkit");
 
 const initialState = {
-    id: 51,
-    nationalCode: 152126578,
-    role: "teacher",
-    name: "Hossein",
-    family: "Zafari",
-    email: "hosseinzafari2000@gmail.com",
-    number: 9035490523,
-    isLogin: true
+    id: -1,
+    nationalCode: -1,
+    role: null,
+    firstName: null,
+    lastName: null,
+    email: null,
+    isLogin: false,
+    token: null
 }
 
 
 const userSlice = createSlice({
   name: 'User' ,
-  initialState: initialState ,
+  initialState ,
   reducers: {
-    setUser: (state, payload) => {
-      state = payload.payload
+    setUser: (state, action) => {
+      state = action.payload
+      return state
     }  ,
-    logout: (state ) => {
-      state = initialState
-    } ,
+    logout: (state ) => state = initialState
+    ,
   },
 })
 

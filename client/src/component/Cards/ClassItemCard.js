@@ -61,7 +61,7 @@ const ClassItemCard = ({title , link , subTitle , university , department , deta
   
   return (
     <Grid item md={4} className={classes.item}>
-      {notify && <SimpleSnackbar isShow={notify} setIsShow={setNotify} message={'لینک مورد نظر با موفقیت کپی شد.'}/>}
+      {notify && <SimpleSnackbar onClose={() => setNotify(false)} message={'لینک مورد نظر با موفقیت کپی شد.'}/>}
       <Card className={classes.root}>
         <CardHeader
           title={' عنوان درس : کلاس اخلاق اسلامی 2'}
