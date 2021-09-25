@@ -71,25 +71,25 @@ const teacherRegister = async (req , res , next) => {
   
   const studentIsExists = await userModel.getTeacherByEmailNC(req.body)
   if (studentIsExists) {
-    next(new Error('این ایمیل یا کد ملی قبلا استفاده شده'))
+    simpleError('این ایمیل یا کد ملی قبلا استفاده شده' , 403 , next)
     return
   }
   
   const validQrcode = await universityModel.getUniversityByQrcode(req.body)
   if (!validQrcode) {
-    next(new Error('کد امنیتی دانشگاه صحیح نمیباشد'))
+    simpleError('کد امنیتی دانشگاه صحیح نمیباشد' , 403 , next)
     return
   }
   
   const userCreated = await userModel.createTeacher(req.body , new Date())
   if (!userCreated) {
-    next(new Error('مشکلی در ثبت نام وجود دارد لطفا بعدا امتحان کنید'))
+    simpleError('مشکلی در ثبت نام وجود دارد لطفا بعدا امتحان کنید' , 403 , next)
     return
   }
   
   const reservedCreated = await universityModel.addUniversityReserveForTeacher(userCreated, validQrcode.id)
   if (!reservedCreated) {
-    next(new Error('مشکلی در ثبت نام وجود دارد لطفا بعدا امتحان کنید'))
+    simpleError('مشکلی در ثبت نام وجود دارد لطفا بعدا امتحان کنید' , 500 , next)
     return
   }
   
@@ -100,7 +100,7 @@ const teacherRegister = async (req , res , next) => {
   })
   const isCreatedDevice = await DeviceModel.newDeviceTeacher(userCreated, req.ip, token, req.body.deviceModel, new Date())
   if (!isCreatedDevice) {
-    next(new Error('مشکلی در شناسایی دستگاه شما وجود دارد لطفا بعدا لاگین فرمایید'))
+    simpleError('مشکلی در شناسایی دستگاه شما وجود دارد لطفا بعدا لاگین فرمایید' , 403 , next)
     return
   }
   
