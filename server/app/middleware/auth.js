@@ -1,5 +1,7 @@
 const TokenService = require('../service/TokenService')
 const DeviceModel = require('../model/DeviceModel')
+const StudentModel = require('../model/StudentModel')
+const TeacherModel = require('../model/TeacherModel')
 
 module.exports = async (req, res, next) => {
   if (!('authorization' in req.headers)) {
@@ -19,8 +21,8 @@ module.exports = async (req, res, next) => {
     })
   }
   
-  const studentResult = await DeviceModel.getDeviceStudentByToken(req.headers.authorization)
-  if (!studentResult) {
+  const isExistsUser = await DeviceModel.getDeviceTeacherOrStudentByToken(req.headers.authorization)
+  if (!isExistsUser) {
     return res.status(401).send({
       success: false,
       code: 401,
@@ -28,7 +30,20 @@ module.exports = async (req, res, next) => {
     })
   }
   
-  req.userInfo = studentResult
+  if(isExistsUser.studentId){
+    req.userInfo = await StudentModel.getStudentById(isExistsUser.studentId)
+    req.userInfo.role = 'student'
+  } else if(isExistsUser.teacherId) {
+    req.userInfo = await TeacherModel.getTeacherById(isExistsUser.teacherId)
+    req.userInfo.role = 'teacher'
+  } else {
+     res.status(401).send({
+      success: false,
+      code: 401,
+      msg: 'Not Found User'
+    })
+  }
+  
   
   await next()
 }
