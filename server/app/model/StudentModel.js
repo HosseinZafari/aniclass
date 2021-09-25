@@ -6,6 +6,16 @@ module.exports = class StudentModel {
         this.bycrypt = require('bcrypt');
     }
     
+    static async getStudentById (id) {
+        try {
+            const result = await  query("SELECT * FROM student_tb WHERE id=$1" , [id])
+            return result.rowCount === 0 ? false : result.rows[0]
+        } catch(err) {
+            console.log(err.message)
+            return false
+        }
+    }
+    
     getStudentByEmailNC = async ({nationalCode , email}) => {
         try {
             const result = await  query("SELECT * FROM student_tb WHERE national_code=$1 AND email=$2" , [nationalCode , email])

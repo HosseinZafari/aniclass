@@ -35,8 +35,14 @@ module.exports = class TeacherModel {
         }
     }
 
-    getTeacherById = () => {
-
+    static async getTeacherById (id)  {
+        try {
+            const result = await  query("SELECT * FROM teacher_tb WHERE id=$1" , [id])
+            return result.rowCount === 0 ? false : result.rows[0]
+        } catch(err) {
+            console.log(err.message)
+            return false
+        }
     }
 
     removeTeacher  = async ({ national_code , password }) => {

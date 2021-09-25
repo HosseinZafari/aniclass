@@ -16,7 +16,7 @@ exports.err = (errors , code = 500 , next) => {
   next(error)
 }
 
-exports.serr = (msg , code = 500 , next) => {
+exports.simpleError = (msg , code = 500 , next) => {
   const error = new Error(msg)
   error.status = code
   next(error)

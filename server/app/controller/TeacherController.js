@@ -3,7 +3,7 @@ const StudentModel = require('../model/StudentModel')
 const TeacherModel = require('../model/TeacherModel')
 const DeviceModel = require('../model/DeviceModel')
 const { sign } = require('../service/TokenService')
-const { serr } = require('../service/ErrorService')
+const { simpleError } = require('../service/ErrorService')
 const { err } = require('../service/ErrorService')
 const { isHaveAnyErrors } = require('../service/Common')
 const getTeacher = (req , res , next) => {
@@ -22,13 +22,13 @@ const teacherLogin = async (req , res , next) => {
   
   switch (result) {
     case 'WRONG_PASSWORD':
-      serr('رمز عبور شما صحیح نمی باشد' , 403 , next)
+      simpleError('رمز عبور شما صحیح نمی باشد' , 403 , next)
       return
     case 'NOT_FOUND':
-      serr('نام کاربری شما صحیح نمیباشد' , 403 , next)
+      simpleError('نام کاربری شما صحیح نمیباشد' , 403 , next)
       return
     case 'ERROR' :
-      serr("مشکلی در سرور به وجود آمده لطفا بعدا امتحان کنید" , 500 , next)
+      simpleError("مشکلی در سرور به وجود آمده لطفا بعدا امتحان کنید" , 500 , next)
       return
   }
   
@@ -40,7 +40,7 @@ const teacherLogin = async (req , res , next) => {
   
   const isCreatedDevice = await DeviceModel.newDeviceTeacher( result.id , req.ip , token , req.body.deviceModel, new Date() )
   if(!isCreatedDevice) {
-    serr("مشکلی در حال حاضر وجود دارد لطفا بعدا امتحان کنید")
+    simpleError("مشکلی در حال حاضر وجود دارد لطفا بعدا امتحان کنید")
     return
   }
   

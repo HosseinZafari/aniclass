@@ -12,6 +12,16 @@ module.exports = class UniversityModel {
         }
     }
     
+    getUniversityByQrcodeForStudent = async ({qrcode}) => {
+        try {
+            const result = await query("SELECT id FROM university_tb WHERE student_qrcode=$1" , [qrcode])
+            return result.rowCount > 0 ? result.rows[0] : false;
+        } catch(err) {
+            console.log(err)
+            return false
+        }
+    }
+    
     addUniversityReserveForTeacher = async (teacherId , universityId) => {
         try {
             const result = await query("INSERT INTO uni_reserved_teacher_tb (teacherid, universityid ) VALUES ($1 , $2) RETURNING id " , [teacherId , universityId])
