@@ -37,7 +37,6 @@ const Styles = makeStyles( {
 })
 
 const AddFab = (props) => {
-  const [open , setOpen] = useState(true)
   const [value , setValue] = useState(1)
   const [selectedDate, handleDateChange] = useState(moment());
   const [date, setDate] = useState(new Date());
@@ -45,20 +44,16 @@ const AddFab = (props) => {
   const [isOnChange , setIsOnChange] = useState(false)
   const classes = Styles()
   
-  const onClose = () => {
-    setOpen(false)
-  }
-  
   const onChange = (event , newValue) => {
     setIsOnChange(true)
     setValue(newValue)
   }
   
   return (
-    <Dialog open={open} fullScreen onClose={onClose} >
+    <Dialog open={true} fullScreen onClose={props.onClose} >
       <AppBar className={classes.appbar}>
         <Toolbar variant={'dense'}>
-          <IconButton edge="start" color="primary" onClick={onClose} aria-label="close" >
+          <IconButton edge="start" color="primary" onClick={props.onClose} aria-label="close" >
             <Close />
           </IconButton>
           

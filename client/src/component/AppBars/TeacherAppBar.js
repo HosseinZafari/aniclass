@@ -8,7 +8,6 @@ import {
   ThemeProvider,
   Typography, useMediaQuery, InputBase, Paper, Icon, Slide, Fade, Grow, Button, Fab
 } from "@material-ui/core";
-import clsx from 'clsx';
 import {
   Add,
   ChevronRight,
@@ -121,13 +120,13 @@ const TeacherAppBar = (props) => {
   const classes = MenuNavigation()
   const history = useHistory()
   const matches = useMediaQuery(theme => theme.breakpoints.down('xs'))
-  const [open  , setOpen] = useState()
+  const [open  , setOpen] = useState(false)
   
   const onMenuItemClick = (link) => {
     history.push(link)
   }
   
-  const onFabClick = () => {
+  const onFabClick = (view) => {
     setOpen(true)
   }
   
@@ -248,12 +247,12 @@ const TeacherAppBar = (props) => {
             }
           </ListItem>
           
-          <Fab color="secondary" style={{margin: 'auto' , marginTop: 5}} aria-label="add" size={'small'}>
+          <Fab color="secondary" onClick={onFabClick} style={{margin: 'auto' , marginTop: 5}} aria-label="add" size={'small'}>
             <Add />
           </Fab>
         </Drawer>
         
-        {<AddFab />}
+        {open ? <AddFab onClose={() => setOpen(false)}  /> : ''}
         <main className={classes.content} style={{marginRight: matches && '8.5%'}}>
           {props.children}
         </main>
