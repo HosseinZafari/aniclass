@@ -18,7 +18,7 @@ module.exports = class StudentModel {
     
     getStudentByEmailNC = async ({nationalCode , email}) => {
         try {
-            const result = await  query("SELECT * FROM student_tb WHERE national_code=$1 AND email=$2" , [nationalCode , email])
+            const result = await  query("SELECT * FROM student_tb WHERE national_code=$1 OR email=$2" , [nationalCode , email])
             return result.rowCount === 0 ? false : result.rows[0]
         } catch(err) {
             console.log(err.message)
