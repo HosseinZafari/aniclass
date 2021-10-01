@@ -158,7 +158,7 @@ const Auth = (props) => {
                 <TabPanel value={1}>
                  <LoginLayout onSuccess={(data) => {
                    if (dispatch(setUser({ ...data , isLogin: true }))) {
-                     setInfo(data.token)
+                     setInfo(data.token , data.role === 'student' ? 0 : 1)
                      history.push('/reload?login=1')
                    }
                  }} />
@@ -168,7 +168,7 @@ const Auth = (props) => {
                 <TabPanel value={2}>
                   <SignupLayout onSuccess={(data) => {
                     if(dispatch(setUser({...data , isLogin: true}))){
-                      setInfo(data.token)
+                      setInfo(data.token , data.role === 'student' ? 0 : 1)
                       history.push('/reload?register=1')
                     }
                   }}/>

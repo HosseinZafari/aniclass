@@ -59,13 +59,13 @@ const LoginLayout = (props) => {
     try {
       let result = undefined
       if(isTeacherForLogin) {
-        result = await studentLogin({
+        result = await teacherLogin({
           nationalCode: inputNationalCode,
           password: inputPassword,
           deviceModel: window.navigator.platform || 'Other'
         })
       } else {
-        result = await teacherLogin({
+        result = await studentLogin({
           nationalCode: inputNationalCode,
           password: inputPassword,
           deviceModel: window.navigator.platform || 'Other'

@@ -3,10 +3,11 @@ import {
   Grid, Grow,
   makeStyles, Slide, Typography, Zoom,
 } from "@material-ui/core";
-import {importFromPublic} from "../../common/Useful";
+import { importFromPublic } from '../../common/Useful'
 import DashboardCard from "../../component/Cards/DashboardCard";
-import TeacherAppBar from "../../component/AppBars/TeacherAppBar";
 import StudentAppBar from '../../component/AppBars/StudentAppBar'
+import { useEffect, useState } from 'react'
+import { getClassReservedCount } from '../../apis/AuthApi'
 
 const Styles = makeStyles((theme) => ({
   root: {},
@@ -15,7 +16,21 @@ const Styles = makeStyles((theme) => ({
 
 const Main = () => {
   const classes = Styles()
-  console.log('testttt')
+  const [countReserved , setCountReserved] = useState(0)
+  
+  useEffect( ()=> {
+    syncData()
+  } , [])
+  
+  async function syncData() {
+    try {
+      const result = await getClassReservedCount()
+      console.log(result.data.count)
+      setCountReserved(result.data.count)
+    } catch (error) {
+      console.log(error)
+    }
+  }
   
   return (
     <StudentAppBar active={1} title={'صفحه اصلی'}>
@@ -24,7 +39,7 @@ const Main = () => {
           <DashboardCard image={importFromPublic('images/homework1-min.jpg')}
                          title='کلاس های من'
                          link={'/lesson/'}
-                         text='تعداد کلاس های ثبت نام شده : (10)'/>
+                         text={` تعداد کلاس های ثبت نام شده ${'(' + countReserved + ')'} `}/>
           <DashboardCard image={importFromPublic('images/homework4-min.jpg')}
                          link={'/session/'}
                          title='جلسات'/>

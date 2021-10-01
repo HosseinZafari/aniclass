@@ -1,4 +1,5 @@
 import {useLocation} from 'react-router-dom';
+import { useEffect } from 'react'
 
 
 export const importFromPublic = (src) => {
@@ -19,6 +20,11 @@ export const getInfo = () => {
 export const setInfo = (token , isTeacher= '0') => {
     localStorage.setItem('$ecret' , token )
     localStorage.setItem('ist' , isTeacher)
+}
+
+export const clearInfo = () => {
+    localStorage.setItem('$ecret' , null)
+    localStorage.setItem('ist' , '0')
 }
 
 export const isEnableProgressBar = percent => !Array.isArray(percent)

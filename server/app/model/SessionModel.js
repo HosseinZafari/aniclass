@@ -1,7 +1,7 @@
+const { query } = require('../boot')
 module.exports = class SessionModel {
 
     constructor(db) {
-        this.db = db;
         this.moment = require('moment-jalaali');
     }
 
@@ -22,23 +22,23 @@ module.exports = class SessionModel {
 
     }
 
-    getSessionByIdClass = async (class_id) => {
+    static getSessionByIdClass = async (class_id) => {
         try {
-            const result = await this.db.pool.query("SELECT session_id, link, dated, start as time\n" +
-                "FROM (SELECT session_tb.id as session_id, date_tb_id, time_tb_id, link\n" +
+            const result = await query("SELECT session_id, link, dated, name ,start as time\n" +
+                "FROM (SELECT session_tb.id as session_id, name ,date_tb_id, time_tb_id, link\n" +
                 "      FROM session_tb\n" +
                 "               JOIN class_tb ON session_tb.class_tb_id = class_tb.id\n" +
                 "      WHERE class_tb_id = $1) sub\n" +
                 "         JOIN date_tb ON date_tb_id = date_tb.id\n" +
                 "         JOIN time_tb ON time_tb_id = time_tb.id ORDER BY dated , time", [class_id]);
             if(result.rowCount > 0) {
-                return {status: 'success' , rows: result.rows}
+                return result.rows
             } else {
-                return {status: 'error'}
+                return 'NOT_FOUND'
             }
         } catch (err) {
             console.log(err.message)
-            return {status: 'error'}
+            return false
         }
     }
 

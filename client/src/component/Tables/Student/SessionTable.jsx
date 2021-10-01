@@ -37,7 +37,7 @@ const SessionTable = ({rows}) => {
               <TableCell component="th" scope="row">
                 {row.title}
               </TableCell>
-              <TableCell align="right">{row.date}</TableCell>
+              <TableCell align="right">{row.dated}</TableCell>
               <TableCell align="right">{row.time}</TableCell>
               <TableCell align="right">
                 <IconButton onClick={() => window.open(row.link)} aria-label="link" color={'secondary'}>

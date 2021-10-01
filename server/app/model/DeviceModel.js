@@ -3,7 +3,7 @@ const {query} = require('../boot')
 module.exports = class DeviceModel {
   
   static async getDeviceTeacherOrStudentByToken (token) {
-    const isStudent = this.getDeviceStudentByToken(token)
+    const isStudent = await this.getDeviceStudentByToken(token)
     return isStudent ? isStudent : this.getDeviceTeacherByToken(token)
   }
   
@@ -30,6 +30,27 @@ module.exports = class DeviceModel {
       return result.rows[0].id;
     } catch(ex) {
       console.log(ex.message);
+      return false
+    }
+  }
+  
+  static async removeDeviceStudent(token) {
+    try {
+      const result = await query("DELETE FROM device_student_tb WHERE token=$1" , [token])
+      return result.rowCount > 0
+    } catch (err) {
+      console.log(err.message)
+      return false
+    }
+  }
+  
+  
+  static async removeDeviceTeacher(token) {
+    try {
+      const result = await query("DELETE FROM device_teacher_tb WHERE token=$1" , [token])
+      return result.rowCount > 0
+    } catch (err) {
+      console.log(err.message)
       return false
     }
   }

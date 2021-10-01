@@ -33,9 +33,11 @@ module.exports = async (req, res, next) => {
   if(isExistsUser.studentId){
     req.userInfo = await StudentModel.getStudentById(isExistsUser.studentId)
     req.userInfo.role = 'student'
+    req.userInfo.token = req.headers.authorization
   } else if(isExistsUser.teacherId) {
     req.userInfo = await TeacherModel.getTeacherById(isExistsUser.teacherId)
     req.userInfo.role = 'teacher'
+    req.userInfo.token = req.headers.authorization
   } else {
      res.status(401).send({
       success: false,

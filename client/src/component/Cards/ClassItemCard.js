@@ -15,6 +15,7 @@ import {MainTheme} from "../../Themes";
 import {copyToClipboard} from "../../common/Useful";
 import SimpleSnackbar from "../Notify/SimpleSnackbar";
 import {Link, useHistory} from "react-router-dom";
+import AlertDialog from '../Dialogs/AlertDialog'
 
 const Styles = makeStyles((theme) => ({
   item: {
@@ -41,11 +42,13 @@ const Styles = makeStyles((theme) => ({
   },
 }));
 
-const ClassItemCard = ({title , link , subTitle , university , department , detail , id , noRegister = false}) => {
+const ClassItemCard = ({title , link  , university , department , detail , id , teacher , onUnReserveClick , noRegister = false}) => {
   const classes = Styles()
   const [expanded , setExpanded] = useState(false)
   const [notify , setNotify] = useState(false)
   const history = useHistory()
+  const [openUnReserve , setOpenUnReserve] = useState(false)
+  
   
   const copyLink = () => {
     copyToClipboard(link, () => {
@@ -61,11 +64,21 @@ const ClassItemCard = ({title , link , subTitle , university , department , deta
   
   return (
     <Grid item md={4} className={classes.item}>
+      {openUnReserve &&
+      (<AlertDialog title={'حساب کاربری'}
+                    detail={'آیا شما واقعا میخواهید این کار انجام شود ؟'}
+                    onClose={() => setOpenUnReserve(false)}
+                    onSubmit={(v) => {
+                      setOpenUnReserve(false)
+                      onUnReserveClick(id)
+                    }}
+      />)
+      }
       {notify && <SimpleSnackbar onClose={() => setNotify(false)} message={'لینک مورد نظر با موفقیت کپی شد.'}/>}
       <Card className={classes.root}>
         <CardHeader
-          title={' عنوان درس : کلاس اخلاق اسلامی 2'}
-          subheader={'دپارتمان : فنی مهندسی'}
+          title={title}
+          subheader={` دپارتمان : ${department} `}
           action={
             <IconButton aria-label={'share'} style={{marginRight: 10}} onClick={copyLink}>
               <Share color={'secondary'}/>
@@ -76,11 +89,11 @@ const ClassItemCard = ({title , link , subTitle , university , department , deta
         <CardContent>
           <div className={classes.cardContent}>
             <Typography component={'h2'}>
-              واحد دانشگاه : پسران کرج فنی حرفه ای
+              {` آموزشکده : ${university}`}
             </Typography>
             
             <Typography component={'h2'}>
-              مدرس : موسی گلزاری پور
+              {` مدرس : ${teacher}`}
             </Typography>
           </div>
         </CardContent>
@@ -91,6 +104,12 @@ const ClassItemCard = ({title , link , subTitle , university , department , deta
           <Button variant={"contained"} color={'primary'} onClick={onDetailClick}>
             جزییات
           </Button>
+          {noRegister && (
+            <Button variant={"text"} onClick={(v) => setOpenUnReserve(true)} >
+              لغو ثبت نام
+            </Button>
+          )}
+          
           {!noRegister && (
             <Button variant={"outlined"} color={'primary'} >
               ثبت نام
@@ -111,17 +130,7 @@ const ClassItemCard = ({title , link , subTitle , university , department , deta
             </Typography>
             
             <Typography component={'p'} style={{textAlign: 'justify'}}>
-              لورم ایپسوم متن ساختگی با تولید سادگی نامفهوم از صنعت چاپ، و با استفاده از طراحان
-              گرافیک
-              است، چاپگرها و متون بلکه روزنامه و مجله در ستون و سطرآنچنان که لازم است، و برای شرایط
-              فعلی تکنولوژی مورد نیاز، و کاربردهای متنوع با هدف بهبود ابزارهای کاربردی می باشد،
-              کتابهای زیادی در شصت و سه درصد گذشته حال و آینده، شناخت فراوان جامعه و متخصصان را می
-              طلبد، تا با نرم افزارها شناخت بیشتری را برای طراحان رایانه ای علی الخصوص طراحان خلاقی،
-              و
-              فرهنگ پیشرو در زبان فارسی ایجاد کرد، در این صورت می توان امید داشت که تمام و دشواری
-              موجود در ارائه راهکارها، و شرایط سخت تایپ به پایان رسد و زمان مورد نیاز شامل حروفچینی
-              دستاوردهای اصلی، و جوابگوی سوالات پیوسته اهل دنیای موجود طراحی اساسا مورد استفاده قرار
-              گیرد.
+              {detail}
             </Typography>
           
           </CardContent>

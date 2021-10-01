@@ -2,6 +2,8 @@ import {Grid, makeStyles, Slide} from "@material-ui/core";
 import DashboardCard from "../../component/Cards/DashboardCard";
 import {importFromPublic} from "../../common/Useful";
 import TeacherAppBar from "../../component/AppBars/TeacherAppBar";
+import { useEffect, useState } from 'react'
+import { getClassReservedCount, getClassReservedTeacherCount } from '../../apis/AuthApi'
 
 const Styles = makeStyles((theme) => ({
   root: {},
@@ -9,6 +11,21 @@ const Styles = makeStyles((theme) => ({
 
 const Main = () => {
   const classes = Styles()
+  const [countReserved , setCountReserved] = useState(0)
+  
+  useEffect( ()=> {
+    syncData()
+  } , [])
+  
+  async function syncData() {
+    try {
+      const result = await getClassReservedTeacherCount()
+      console.log(result.data.count)
+      setCountReserved(result.data.count)
+    } catch (error) {
+      console.log(error)
+    }
+  }
   
   return (
     <TeacherAppBar active={1} title={'صفحه اصلی'}>
@@ -17,7 +34,7 @@ const Main = () => {
           <DashboardCard image={importFromPublic('images/homework1-min.jpg')}
                          title='کلاس های ایجاد شده'
                          link={'/lesson/'}
-                         text='تعداد کلاس های ایجاد شده : (10)'/>
+                         text={`تعداد کلاس های ایجاد شده : (${countReserved})`}/>
           <DashboardCard image={importFromPublic('images/homework2-min.jpg')}
                          link={'/search/'}
                          title='جستجو'/>

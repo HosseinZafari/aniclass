@@ -20,9 +20,13 @@ import {
 import {DrawerTheme, MainTheme} from "../../Themes";
 import {useHistory} from "react-router-dom";
 import {grey, yellow} from "@material-ui/core/colors";
-import {importFromPublic} from "../../common/Useful";
+import { clearInfo, importFromPublic } from '../../common/Useful'
 import {useState} from "react";
 import AddFab from "../Dialogs/AddFab";
+import { logoutStudent, logoutTeacher } from '../../apis/AuthApi'
+import { logout } from '../../redux/reducers/UserSlice'
+import { useDispatch } from 'react-redux'
+import AlertDialog from '../Dialogs/AlertDialog'
 
 const drawerWidth = 85
 const MenuNavigation = makeStyles((theme) => ({
@@ -121,6 +125,8 @@ const TeacherAppBar = (props) => {
   const history = useHistory()
   const matches = useMediaQuery(theme => theme.breakpoints.down('xs'))
   const [open  , setOpen] = useState(false)
+  const [openLogout , setOpenLogout] = useState(false)
+  const dispatch = useDispatch()
   
   const onMenuItemClick = (link) => {
     history.push(link)
@@ -128,6 +134,19 @@ const TeacherAppBar = (props) => {
   
   const onFabClick = (view) => {
     setOpen(true)
+  }
+  const onSubmitLogout = async () => {
+    try {
+      const result = await logoutTeacher()
+      if(result.data) {
+        clearInfo()
+        dispatch(logout())
+        history.push('/reload?clear=1')
+      }
+    } catch (err) {
+      console.log(err)
+    }
+    
   }
   
   return (
@@ -236,7 +255,7 @@ const TeacherAppBar = (props) => {
             }
           </ListItem>
           <ListItem focusRipple={'red'} button key={"خروج"} className={classes.listItem}
-                    onClick={() => onMenuItemClick('/exit/')}>
+                    onClick={(v) => setOpenLogout(true)}>
             <ListItemIcon className={classes.listIcon}>
               <ExitToApp color={props.active === 5 ? 'primary' : 'inherit'}/>
             </ListItemIcon>
@@ -251,7 +270,14 @@ const TeacherAppBar = (props) => {
             <Add />
           </Fab>
         </Drawer>
-        
+        {openLogout &&
+        (<AlertDialog title={'حساب کاربری'}
+                      detail={'آیا میخواهید از حساب کاربری خود خارج شوید ؟'}
+                      onClose={() => setOpenLogout(false)}
+                      onSubmit={onSubmitLogout}
+        />)
+        }
+  
         {open ? <AddFab onClose={() => setOpen(false)}  /> : ''}
         <main className={classes.content} style={{marginRight: matches && '8.5%'}}>
           {props.children}

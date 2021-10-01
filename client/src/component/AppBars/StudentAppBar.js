@@ -1,19 +1,39 @@
 import {
   AppBar,
-  createStyles, createTheme,
+  createStyles,
+  createTheme,
   Drawer,
-  IconButton, ListItem, ListItemIcon, ListItemText,
-  makeStyles, MuiThemeProvider,
+  IconButton,
+  ListItem,
+  ListItemIcon,
+  ListItemText,
+  makeStyles,
+  MuiThemeProvider,
   Toolbar,
   ThemeProvider,
-  Typography, useMediaQuery, InputBase, Paper, Icon, Slide, Fade, Grow
-} from "@material-ui/core";
+  Typography,
+  useMediaQuery,
+  InputBase,
+  Paper,
+  Icon,
+  Slide,
+  Fade,
+  Grow,
+  Dialog,
+  DialogTitle,
+  DialogContentText, DialogContent, Button, DialogActions
+} from '@material-ui/core'
 import clsx from 'clsx';
 import {ChevronRight, Dashboard, ExitToApp, RateReview, Search, Settings} from "@material-ui/icons";
 import {DrawerTheme, MainTheme} from "../../Themes";
 import {useHistory} from "react-router-dom";
 import {grey, yellow} from "@material-ui/core/colors";
-import {importFromPublic} from "../../common/Useful";
+import { clearInfo, importFromPublic } from '../../common/Useful'
+import AlertDialog from '../Dialogs/AlertDialog'
+import { useState } from 'react'
+import { logoutStudent } from '../../apis/AuthApi'
+import { useDispatch } from 'react-redux'
+import { logout, setUser } from '../../redux/reducers/UserSlice'
 
 const drawerWidth = 85
 const MenuNavigation = makeStyles((theme) => ({
@@ -111,9 +131,25 @@ const StudentAppBar = (props) => {
   const classes = MenuNavigation()
   const history = useHistory()
   const matches = useMediaQuery(theme => theme.breakpoints.down('xs'))
+  const [openLogout , setOpenLogout] = useState(false)
+  const dispatch = useDispatch()
   
   const onMenuItemClick = (link) => {
     history.push(link)
+  }
+  
+  const onSubmitLogout = async () => {
+    try {
+      const result = await logoutStudent()
+      if(result.data) {
+        clearInfo()
+        dispatch(logout())
+        history.push('/reload?clear=1')
+      }
+    } catch (err) {
+      console.log(err)
+    }
+    
   }
   
   return (
@@ -201,7 +237,7 @@ const StudentAppBar = (props) => {
             }
           </ListItem>
           <ListItem focusRipple={'red'} button key={"خروج"} className={classes.listItem}
-                    onClick={() => onMenuItemClick('/exit/')}>
+                    onClick={(v) => setOpenLogout(true)}>
             <ListItemIcon className={classes.listIcon}>
               <ExitToApp color={props.active === 5 ? 'primary' : 'inherit'}/>
             </ListItemIcon>
@@ -214,6 +250,14 @@ const StudentAppBar = (props) => {
         </Drawer>
         
         <main className={classes.content} style={{marginRight: matches && '8.5%'}}>
+          {openLogout &&
+            (<AlertDialog title={'حساب کاربری'}
+                          detail={'آیا میخواهید از حساب کاربری خود خارج شوید ؟'}
+                          onClose={() => setOpenLogout(false)}
+                          onSubmit={onSubmitLogout}
+            />)
+          }
+          
           {props.children}
         </main>
       </div>

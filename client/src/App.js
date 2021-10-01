@@ -31,7 +31,6 @@ const App = (props) => {
   const userAuth = async () => {
     try {
       const result = await getUserInfo();
-      console.log(result.data)
       const { id, firstName , lastName , role ,  email , nationalCode , token} = result.data
       dispatch(setUser({id , nationalCode ,firstName, lastName , email , token , role , isLogin: true}))
       history.push('/')

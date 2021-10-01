@@ -1,5 +1,7 @@
+const classRouter = require('./classes')
 const studentRouter = require('./students')
 const teacherRouter = require('./teachers')
+const deviceRouter  = require('./device')
 const studentController = require('../controller/StudentsController')
 const teacherController = require('../controller/TeacherController')
 const {
@@ -28,4 +30,11 @@ module.exports = (app) => {
   app.use('/api/v1/teacher/register', schemaRegisterTeacher, teacherController.teacherRegister)
   app.use('/api/v1/teacher', [auth], teacherRouter)
   
+  
+  // class
+  app.use('/api/v1/class' , [auth] , classRouter)
+  
+  
+  // device
+  app.use('/api/v1/device' , [auth] , deviceRouter)
 }

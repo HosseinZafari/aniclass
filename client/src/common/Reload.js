@@ -9,7 +9,7 @@ const Reload = (props) => {
 
 
     if(query.get('clear')) {
-        history.push('/?logout=1');
+        history.push('/auth');
     }
 
     if(query.get('register')) {

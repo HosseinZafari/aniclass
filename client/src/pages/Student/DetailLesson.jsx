@@ -13,6 +13,8 @@ import {useParams} from 'react-router-dom'
 import {MainTheme} from "../../Themes";
 import SessionTable from "../../component/Tables/Student/SessionTable";
 import TeacherAppBar from "../../component/AppBars/TeacherAppBar";
+import { useEffect, useState } from 'react'
+import { getClassById, getSessionsOfClass } from '../../apis/AuthApi'
 
 const Styles = makeStyles((theme) => ({
   detailLayout: {
@@ -58,22 +60,49 @@ const Styles = makeStyles((theme) => ({
   sessionLayout: {}
 }))
 
-const rows = () => {
-  return [
-    {title: 'جلسه اول سیستم عامل' , time: '20:00' , date: '1400/7/5' , link: 'https://google.com/'},
-    {title: 'جلسه اول سیستم عامل' , time: '20:00' , date: '1400/7/5' , link: 'https://google.com/'},
-    {title: 'جلسه اول سیستم عامل' , time: '20:00' , date: '1400/7/5' , link: 'https://google.com/'},
-    {title: 'جلسه اول سیستم عامل' , time: '20:00' , date: '1400/7/5' , link: 'https://google.com/'},
-  ]
-}
 
 const DetailLesson = (props) => {
   const {id} = useParams()
   const {navigation} = props.location.state
   const classes = Styles()
+  const [classInfo , setClassInfo] = useState({
+    title: 'در حال بارگذری...',
+    description: 'در حال بارگذری...',
+    department_name: 'در حال بارگذری...',
+    teacher_name: 'در حال بارگذری...',
+    teacher_family: 'در حال بارگذری...',
+    university_name: 'در حال بارگذری...'
+  })
+  const [sessions , setSessions] = useState([])
   const lg = useMediaQuery(theme => (theme.breakpoints.down('lg')))
   const md = useMediaQuery(theme => (theme.breakpoints.down('md')))
   
+  useEffect( () => {
+    syncDetailLesson()
+    } , [])
+  
+  const syncDetailLesson = async () => {
+    try {
+      const result = await getClassById(id)
+      if(result.data.class) {
+        setClassInfo(result.data.class)
+        await syncSessions()
+      }
+    } catch (error) {
+      console.log(error)
+    }
+  }
+  
+  const syncSessions = async () => {
+    try {
+      const result = await getSessionsOfClass(id)
+      if(result.data.sessions) {
+        setSessions(result.data.sessions)
+      }
+    } catch(error) {
+      console.log(error)
+    }
+  }
   
   return (
     <StudentAppBar active={navigation} title={'جزییات کلاس'}>
@@ -87,10 +116,10 @@ const DetailLesson = (props) => {
               <Grid item container justifyContent={'space-between'} alignItems={'baseline'}
                     className={classes.header} direction={'row'} xs={12}>
                 <Typography className={classes.title}>
-                  کلاس سیستم عامل 2
+                  {classInfo.title}
                 </Typography>
                 <Typography className={classes.subTitle}>
-                  مدرس : موسی گلزاری پور
+                  {` مدرس : ${classInfo.teacher_name + '' + classInfo.teacher_family}`}
                 </Typography>
               </Grid>
               
@@ -98,12 +127,12 @@ const DetailLesson = (props) => {
                     justifyContent={'space-between'} direction={'row'}>
                 <Grid item sx={6} style={{marginLeft: 15 , marginTop: 5 }}>
                   <Typography>
-                    عنوان دپارتمان : فنی مهندسی
+                    {` عنوان دپارتمان : ${classInfo.department_name}`}
                   </Typography>
                 </Grid>
                 <Grid item sx={6}  style={{marginTop: 5}}>
                   <Typography>
-                    دانشگاه : آموزشگاه شهید بهشتی کرج
+                    {` آموزشگاه : ${classInfo.university_name}`}
                   </Typography>
                 </Grid>
               </Grid>
@@ -122,22 +151,14 @@ const DetailLesson = (props) => {
                 lineHeight: 2,
                 margin: 8
               }}>
-                لورم ایپسوم متن ساختگی با تولید سادگی نامفهوم از صنعت چاپ، و با استفاده از طراحان
-                گرافیک است، چاپگرها و متون بلکه روزنامه و مجله در ستون و سطرآنچنان که لازم است، و
-                برای شرایط فعلی تکنولوژی مورد نیاز، و کاربردهای متنوع با هدف بهبود ابزارهای کاربردی
-                می باشد، کتابهای زیادی در شصت و سه درصد گذشته حال و آینده، شناخت فراوان جامعه و
-                متخصصان را می طلبد، تا با نرم افزارها شناخت بیشتری را برای طراحان رایانه ای علی
-                الخصوص طراحان خلاقی، و فرهنگ پیشرو در زبان فارسی ایجاد کرد، در این صورت می توان امید
-                داشت که تمام و دشواری موجود در ارائه راهکارها، و شرایط سخت تایپ به پایان رسد و زمان
-                مورد نیاز شامل حروفچینی دستاوردهای اصلی، و جوابگوی سوالات پیوسته اهل دنیای موجود
-                طراحی اساسا مورد استفاده قرار گیرد.
+                {classInfo.description}
               </Grid>
             </Grid>
           
           </Box>
           
           <Grid item xs={12} md={5}  style={{marginTop: 5}}>
-            <SessionTable rows={rows()} />
+            <SessionTable rows={sessions} />
           </Grid>
         </Grid>
       </Slide>

@@ -1,11 +1,9 @@
+const { query } = require('../boot')
 module.exports =  class ClazzModel {
-    constructor(db) {
-        this.db = db;
-    }
 
     createClass  = async ({ teacher_id , description , class_code , capasity , link , title,  department_id , university_id}) => {
       try {
-        const result = await this.db.pool.query('INSERT INTO class_tb (teacher_tb_id , description , link , capacity , title , class_code , departmant_tb_id , university_tb_id) VALUES ($1 , $2 , $3 , $4 , $5 , $6 , $7 , $8) RETURNING id' , [teacher_id , description , link , capasity, title,  class_code , department_id , university_id]);
+        const result = await query('INSERT INTO class_tb (teacher_tb_id , description , link , capacity , title , class_code , departmant_tb_id , university_tb_id) VALUES ($1 , $2 , $3 , $4 , $5 , $6 , $7 , $8) RETURNING id' , [teacher_id , description , link , capasity, title,  class_code , department_id , university_id]);
 
         if(result.rows.length > 0) {
           return {status: "success" , id: result.rows[0].id};
@@ -15,7 +13,7 @@ module.exports =  class ClazzModel {
       } catch(err) {
         console.log(err.message)
         return {status: "error"};
-      } 
+      }
     }
 
     getClassesByLastId = async (req) => {
@@ -57,17 +55,31 @@ module.exports =  class ClazzModel {
         return {lastId: lastId , result: result};
     }
 
-    getClassById = async ({id}) => {
+    static getClassById = async (id) => {
       try {
-        const result = await this.db.pool.query("SELECT class_tb.id , class_tb.title , class_tb.capacity , class_tb.class_code , class_tb.description , class_tb.link , teacher_tb.name as teacher_name , teacher_tb.id as teacher_id, teacher_tb.family as teacher_family,  class_tb.departmant_tb_id as department_id , class_tb.university_tb_id as university_id,department_tb.department_name as department_name FROM class_tb JOIN teacher_tb ON class_tb.teacher_tb_id=teacher_tb.id JOIN department_tb ON class_tb.departmant_tb_id=department_tb.id WHERE class_tb.id=$1;" , [parseInt(id)]);
+        const result = await query("SELECT class_tb.id , class_tb.title , class_tb.capacity , class_tb.class_code , class_tb.description , class_tb.link , teacher_tb.name as teacher_name ,  teacher_tb.family as teacher_family ,university_tb.name as university_name, department_tb.department_name as department_name FROM class_tb JOIN teacher_tb ON class_tb.teacher_tb_id=teacher_tb.id JOIN department_tb ON class_tb.departmant_tb_id=department_tb.id JOIN university_tb ON class_tb.university_tb_id=university_tb.id WHERE class_tb.id=$1;" , [parseInt(id)])
         if(result.rowCount > 0) {
-            return {status: "success" , row: result.rows[0]};
+            return result.rows[0]
         } else {
-            return {status: "error"};
+            return 'NOT_FOUND'
         }
       } catch(err) {
           console.log(err.message);
-          return {status: "error"};
+          return false;
+      }
+    }
+    
+    static getPasswordClass = async (id) => {
+      try {
+        const result = await query('SELECT password FROM class_tb WHERE id=$1' , [id])
+        if(result.rowCount > 0) {
+            return result.rows[0]
+        } else {
+            return false
+        }
+      } catch(err) {
+          console.log(err.message);
+          return false;
       }
     }
 
@@ -118,7 +130,7 @@ module.exports =  class ClazzModel {
         const result = await this.db.pool.query("DELETE FROM class_tb WHERE class_tb.teacher_tb_id=$1 AND class_tb.id=$2;" , [teacher_id , class_id]);
         if(result.rowCount > 0)
           return {status: "success"};
-        else  
+        else
          return {status: "error"};
       } catch(err) {
         console.log(err.message);

@@ -137,3 +137,40 @@ exports.schemaReserveClassStudent = checkSchema({
     errorMessage: "کلاس شما مشخص نیست" ,
   } ,
 })
+
+exports.schemaGetClass = checkSchema({
+  id: {
+    in: ['params' , 'query'] ,
+    isInt : true ,
+    errorMessage: 'لطفا شناسه کلاس خود را صحیح وارد کنید'
+  }
+})
+
+exports.schemaClassSession = checkSchema({
+  id: {
+    in: ['params' , 'query'] ,
+    isInt : true ,
+    errorMessage: 'لطفا شناسه کلاس خود را صحیح وارد کنید'
+  }
+})
+
+exports.schemaReserveClass = checkSchema({
+  id: {
+    in: ['params' , 'query'] ,
+    isInt : true ,
+    errorMessage: 'لطفا شناسه کلاس خود را صحیح وارد کنید'
+  } ,
+  password: {
+    in: ['body'] ,
+    isString : true ,
+    errorMessage: 'لطفا رمز عبور خود را وارد کنید'
+  }
+})
+
+exports.schemaUnReserveClass = checkSchema({
+  id: {
+    in: ['params' , 'query'] ,
+    isInt : true ,
+    errorMessage: 'لطفا شناسه کلاس خود را صحیح وارد کنید'
+  } ,
+})
