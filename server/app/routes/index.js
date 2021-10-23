@@ -1,9 +1,14 @@
 const classRouter = require('./classes')
 const studentRouter = require('./students')
 const teacherRouter = require('./teachers')
+const timeRouter = require('./times')
 const deviceRouter  = require('./device')
+const departmentRouter = require('./departments')
+const searchRouter  = require('./search')
+const universityRouter  = require('./universities')
 const studentController = require('../controller/StudentsController')
 const teacherController = require('../controller/TeacherController')
+
 const {
   body,
   checkSchema
@@ -37,4 +42,18 @@ module.exports = (app) => {
   
   // device
   app.use('/api/v1/device' , [auth] , deviceRouter)
+  
+  // search
+  app.use('/api/v1/search' , [auth] , searchRouter)
+  
+  
+  // university
+  app.use('/api/v1/university' , [auth] , universityRouter)
+  
+  // departments
+  app.use('/api/v1/department' , [auth] , departmentRouter)
+
+
+  // times 
+  app.use('/api/v1/time' , [auth] , timeRouter)
 }

@@ -76,6 +76,16 @@ module.exports = class DeviceModel {
     }
   }
   
+  static async updateLastAccessTeacher (date , token) {
+    try {
+      const result = await query("Update device_teacher_tb SET \"lastAccess\"=$1 WHERE token=$2" , [date , token])
+      return result.rowCount > 0;
+    } catch (err) {
+      console.log(err.message)
+      return false
+    }
+  }
+  
   
   
   static async newDeviceTeacher(teacherId , ip  , token , deviceName , lastAccess) {

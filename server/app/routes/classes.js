@@ -1,9 +1,10 @@
 const express = require('express')
 const classController = require('../controller/ClassController')
-const { schemaUnReserveClass } = require('../schema')
+const { schemaUnReserveClass, schemaAddClass } = require('../schema')
 const { schemaReserveClass } = require('../schema')
 const { schemaClassSession } = require('../schema')
 const { schemaGetClass } = require('../schema')
+const { schemaRemoveClass } = require('../schema')
 const router  = express.Router()
 
 router.get( '/:id' , schemaGetClass , classController.getClassInfo)
@@ -17,6 +18,9 @@ router.delete('/:id/unreserve' ,schemaUnReserveClass ,classController.unReserveC
 // teacher
 router.get('/created/all/count' , classController.getCreatedClassTeacherCount)
 router.get('/created/all' , classController.getCreatedClassTeacher)
+router.delete('/:classId/remove/' , schemaRemoveClass , classController.removeClass)
+router.post('/new' , schemaAddClass , classController.createClass)
 
 module.exports = router
 
+ 

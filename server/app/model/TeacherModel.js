@@ -1,15 +1,13 @@
 const { query } = require('../boot')
+const bcrypt = require('bcrypt');
+
 module.exports = class TeacherModel {
 
-    constructor(db) {
-        this.db = db;
-        this.bycrypt = require('bcrypt');
-    }
 
 
     createTeacher  = async ({  nationalCode , firstName , lastName , email , password } , registerTime) => {
         try {
-            const passwordHashed = await this.bycrypt.hash(password ,parseInt(process.env.SALT_ROUND));
+            const passwordHashed = await bcrypt.hash(password ,parseInt(process.env.SALT_ROUND));
             const result = await query("INSERT INTO teacher_tb(national_code , name , family , email , password , createdat) VALUES($1 , $2 , $3 ,$4 , $5 , $6) RETURNING id;" , [
                 nationalCode , firstName , lastName , email , passwordHashed , registerTime
             ]);
@@ -63,7 +61,7 @@ module.exports = class TeacherModel {
                 return "NOT_FOUND";
             }
         
-            const isValid = await this.bycrypt.compare(password , result.rows[0].password);
+            const isValid = await bcrypt.compare(password , result.rows[0].password);
             if(isValid) {
                 return result.rows[0]
             }
@@ -75,31 +73,26 @@ module.exports = class TeacherModel {
         }
     }
 
-    updateTeacher  = async ({national_code , family , name , email , password , new_national_code , new_password}) => {
+   static updateTeacher  = async ({nationalCode , email , firstName , lastName , password } , id) => {
+        console.log(nationalCode , email , firstName , lastName , password , id)
         try {
-            const teacherForUpdate = await this.db.pool.query("SELECT * FROM teacher_tb WHERE national_code=$1 ;" , [national_code]);
+            const teacherForUpdate = await query("SELECT * FROM teacher_tb WHERE id=$1 ;" , [id]);
             if(teacherForUpdate.rowCount === 0) {
-                return {status: 'ERROR'};
+                return false
             }
 
-            const isValid = await this.bycrypt.compare(password , teacherForUpdate.rows[0].password);
+            const isValid = await bcrypt.compare(password , teacherForUpdate.rows[0].password);
             if(!isValid) {
-                return {staus: 'ERROR'};
+                return 'PASSWORD_IS_WRONG';
             }
 
-            const hashedPassword = await this.bycrypt.hash(new_password , parseInt(process.env.SALT_ROUND));
-            const result = await this.db.pool.query("UPDATE teacher_tb SET national_code=$1 , email=$2 , password=$3 , name=$4 , family=$5  WHERE national_code=$6;" ,
-                [new_national_code , email , hashedPassword , name , family , national_code]);
+            const result = await query("UPDATE teacher_tb SET national_code=$1 , email=$2  , name=$3 , family=$4  WHERE id=$5;" ,
+                [nationalCode , email , firstName , lastName , id]);
 
-            if(result.rowCount > 0 ) {
-                const result = await this.db.pool.query("SELECT * FROM teacher_tb WHERE national_code=$1 ;" , [new_national_code]);
-
-                return {status: "SUCCESS" , rows: result.rows};
-            }
-            return {status: "ERROR"};
+            return result.rowCount > 0 ? true : "NO_CHANGED"
         } catch(ex) {
-            console.log('catch in updateStudent ' + ex.message);
-            return {status: "ERROR"};
+            console.log('ERROR ' + ex);
+            return false
         }
     }
 

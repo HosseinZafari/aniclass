@@ -20,7 +20,7 @@ const Style = makeStyles({
   table: {}
 })
 
-const HourAccessTable = ({rows = []}) => {
+const HourAccessTable = ({rows = [] , selected}) => {
   const classes = Style()
   const defaultValue = [{}]
   
@@ -56,6 +56,7 @@ const HourAccessTable = ({rows = []}) => {
                 <TableCell >
                   <Button variant={'contained'}
                           size={'small'}
+                          onClick={e => selected(row.id)}
                           endIcon={<Schedule />}
                           color={'secondary'}>
                     انتخاب

@@ -4,7 +4,7 @@ const cors = require('cors')
 module.exports = (app) => {
   const corsOptions = {
     origin: ['http://localhost:3000'],
-    methods: ["POST" , "GET" , "PUT" , "DELETE"] ,
+    methods: ["POST" , "GET" , "PUT" , "DELETE" , "PATCH"] ,
     credentials:true,            //access-control-allow-credentials:true
     optionSuccessStatus:200
   }

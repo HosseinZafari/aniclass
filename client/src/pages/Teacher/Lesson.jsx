@@ -5,7 +5,12 @@ import {
 import ClassItemCard from "../../component/Cards/ClassItemCard";
 import { useEffect, useState } from 'react'
 import TeacherAppBar from "../../component/AppBars/TeacherAppBar";
-import { getClassCreated, getClassReserved, unReserveClassStudent } from '../../apis/AuthApi'
+import {
+  getClassCreated,
+  getClassReserved,
+  removeClassApi,
+  unReserveClassStudent
+} from '../../apis/AuthApi'
 import Config from '../../common/Config'
 import { Alert, AlertTitle } from '@material-ui/lab'
 
@@ -38,13 +43,13 @@ const Search = () => {
   }
   async function unReserveClass (id) {
     try {
-      // const result = await unReserveClassStudent(id)
-      // if(result.data) {
+      const result = await removeClassApi(id)
+      if(result.data) {
         let newItems = items.filter((value) => value.class_id !== id)
         setItems(newItems)
-      // }
+      }
     } catch (err) {
-      console.log(err)
+      console.log(err.response.data)
     }
   }
   
@@ -61,6 +66,7 @@ const Search = () => {
                 key={item.id}
                 id={item.class_id}
                 noRegister={true}
+                isTeacher={true}
                 title={item.class_title}
                 onUnReserveClick={(id) => unReserveClass(id)}
                 detail={item.description}

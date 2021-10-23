@@ -1,3 +1,6 @@
+const {query} = require('../boot')
+
+
 module.exports = class DateModel {
 
     constructor(db) {
@@ -5,22 +8,22 @@ module.exports = class DateModel {
     }
 
 
-    createDate = async (date) => {
+    static createDate = async (date) => {
         try {
-            const result1 = await this.db.pool.query("INSERT INTO date_tb(dated) SELECT $1 WHERE NOT EXISTS(SELECT dated FROM date_tb WHERE dated=$2)" , [
+            const result1 = await query("INSERT INTO date_tb(dated) SELECT $1 WHERE NOT EXISTS(SELECT dated FROM date_tb WHERE dated=$2) " , [
                 date , date
             ]);
 
             if(result1) {
-                const result2 = await this.db.pool.query("SELECT id FROM date_tb WHERE dated=$1" , [date]);
-                return {status: 'success' , date_id: result2.rows[0].id}
+                const dates = await query("SELECT id FROM date_tb WHERE dated=$1" , [date]);
+                return dates.rows[0].id 
             } else {
-                return {status: 'error'}
+                return false
             }
 
         } catch (err) {
             console.log(err.message)
-            return {status: 'error'}
+            return false
         }
     }
 

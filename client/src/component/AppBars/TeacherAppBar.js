@@ -126,6 +126,7 @@ const TeacherAppBar = (props) => {
   const matches = useMediaQuery(theme => theme.breakpoints.down('xs'))
   const [open  , setOpen] = useState(false)
   const [openLogout , setOpenLogout] = useState(false)
+  const [searchInput , setSearchInput] = useState('')
   const dispatch = useDispatch()
   
   const onMenuItemClick = (link) => {
@@ -162,21 +163,27 @@ const TeacherAppBar = (props) => {
               
               {props.searchPanel ? (
                   <>
-                    <Paper component={'form'} className={classes.inputLayout}>
+                    <Paper component={'form'} onSubmit={(e) => {
+                      e.preventDefault()
+                      props.submitSearch(searchInput)
+                    }} className={classes.inputLayout}>
                       
                       <InputBase
                         className={classes.inputSearch}
                         placeholder={'جستجو'}
-                      
+                        onChange={v => setSearchInput(v.target.value)}
                       />
-                      <IconButton type="submit" className={classes.iconSearch} aria-label="search">
+                      <IconButton type="button"
+                                  className={classes.iconSearch}
+                                  onClick={(v) => props.submitSearch(searchInput)}
+                                  aria-label="search">
                         <Search fontSize={'small'}/>
                       </IconButton>
                     </Paper>
                     
-                    <IconButton type={'button'} className={classes.advancedSearch}>
-                      <Settings fontSize={'small'}/>
-                    </IconButton>
+                    {/*<IconButton type={'button'} className={classes.advancedSearch}>*/}
+                    {/*  <Settings fontSize={'small'}/>*/}
+                    {/*</IconButton>*/}
                   </>) :
                 
                 <Typography component={"h1"}

@@ -154,15 +154,56 @@ const unReserveClass = async (req , res , next) => {
   }
 }
 
+const removeClass = async (req, res, next) => {
+  if(isHaveAnyErrors(req , (error) => {
+    err(error, 422 , next)
+  })) return
+  
+  if(req.userInfo.role !== 'teacher') {
+    return simpleError('شما نمی توانید این درخواست را داشته باشید' , 403 , next)
+  }
+  
+  const result = await ClazzModel.removeClass(req.userInfo.id , req.params.classId)
+  if(result) {
+    return res.status(200).send({
+      status: 'success' ,
+      msg: 'با موفقیت حذف شد',
+      code: 200
+    })
+  } else {
+    return simpleError('خطا در حذف کردن' , 500 , next)
+  }
+}
+
+
+const createClass = async (req , res , next) => {
+  if (isHaveAnyErrors(req, (errors) => {
+    err(errors, 422, next)
+  })) return
+  
+  const result = await ClazzModel.createClass(req.userInfo.id , req.body)
+  if(result) {
+    return res.send({
+      status: 'success' ,
+      msg: 'با موفقیت اضافه شد',
+      code: 200
+    })
+  } else {
+    return simpleError('مشکلی در ساخت کلاس جدید وجود دارد' , 400 , next)
+  }
+}
+
 
 module.exports = {
- getNumbersOfClassReserved ,
+  getNumbersOfClassReserved ,
   getClassReserved,
   getClassInfo ,
   getSessionsOfAClass,
   setReserveClass ,
   getCreatedClassTeacherCount,
   getCreatedClassTeacher,
-  unReserveClass
+  unReserveClass,
+  removeClass ,
+  createClass
 }
 

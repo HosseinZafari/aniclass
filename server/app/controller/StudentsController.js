@@ -145,9 +145,55 @@ const studentRegister = async (req, res, next) => {
   })
 }
 
+const update = async (req , res , next) => {
+  if (isHaveAnyErrors(req, (errors) => {
+    err(errors, 422, next)
+  })) return
+  
+  try {
+    const result = await StudentModel.updateStudent(req.body , req.userInfo.id)
+    if(result === 'PASSWORD_IS_WRONG') {
+      return res.status(403).send({
+        msg: 'رمز عبور شما اشتباه است' ,
+        status: 'error' ,
+        code: 403
+      })
+    }
+  
+    if(result === 'NO_CHANGED') {
+      return res.status(400).send({
+        msg: 'هیچ تغییری وجود ندارد.' ,
+        status: 'error' ,
+        code: 400
+      })
+    }
+    
+    if(result) {
+      return res.status(202).send({
+        status: 'success',
+        msg: "با موفقیت به روز شد" ,
+        id: req.userInfo.id,
+        role: "student" ,
+        nationalCode: req.body.nationalCode,
+        firstName: req.body.firstName,
+        lastName: req.body.lastName,
+        email: req.body.email,
+        token: req.userInfo.token,
+        code: 200
+      })
+    } else {
+      simpleError('مشکلی در بروزرسانی وجود دارد' , 500 , next)
+    }
+  } catch (e) {
+    simpleError('مشکلی در بروزرسانی وجود دارد' , 500 , next)
+  }
+  
+}
+
 module.exports = {
   reservedClassList,
   studentLogin,
   studentRegister ,
   reserveClass ,
+  update
 }

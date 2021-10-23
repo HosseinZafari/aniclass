@@ -16,6 +16,7 @@ import {copyToClipboard} from "../../common/Useful";
 import SimpleSnackbar from "../Notify/SimpleSnackbar";
 import {Link, useHistory} from "react-router-dom";
 import AlertDialog from '../Dialogs/AlertDialog'
+import ReserveDialog from '../Dialogs/ReserveDialog'
 
 const Styles = makeStyles((theme) => ({
   item: {
@@ -42,12 +43,14 @@ const Styles = makeStyles((theme) => ({
   },
 }));
 
-const ClassItemCard = ({title , link  , university , department , detail , id , teacher , onUnReserveClick , noRegister = false}) => {
+const ClassItemCard = ({title , link  , university , department , detail , id , teacher , onUnReserveClick , hasPassword , onReserveClick , isRegisterd = false , noRegister = false , isTeacher = false}) => {
   const classes = Styles()
   const [expanded , setExpanded] = useState(false)
   const [notify , setNotify] = useState(false)
   const history = useHistory()
   const [openUnReserve , setOpenUnReserve] = useState(false)
+  const [openReserve , setOpenReserve] = useState(false)
+  const [openPassword , setOpenPassword] = useState(false)
   
   
   const copyLink = () => {
@@ -64,8 +67,7 @@ const ClassItemCard = ({title , link  , university , department , detail , id , 
   
   return (
     <Grid item md={4} className={classes.item}>
-      {openUnReserve &&
-      (<AlertDialog title={'حساب کاربری'}
+      {openUnReserve &&  (<AlertDialog title={'حساب کاربری'}
                     detail={'آیا شما واقعا میخواهید این کار انجام شود ؟'}
                     onClose={() => setOpenUnReserve(false)}
                     onSubmit={(v) => {
@@ -74,6 +76,16 @@ const ClassItemCard = ({title , link  , university , department , detail , id , 
                     }}
       />)
       }
+      {openReserve && (<AlertDialog title={'حساب کاربری'}
+                      detail={'آیا شما می خواهید ثبت نام کنید ؟'}
+                      onClose={() => setOpenReserve(false)}
+                      onSubmit={(v) => {
+                        setOpenReserve(false)
+                        onReserveClick(id)
+                      }}
+        />)
+      }
+      
       {notify && <SimpleSnackbar onClose={() => setNotify(false)} message={'لینک مورد نظر با موفقیت کپی شد.'}/>}
       <Card className={classes.root}>
         <CardHeader
@@ -104,15 +116,27 @@ const ClassItemCard = ({title , link  , university , department , detail , id , 
           <Button variant={"contained"} color={'primary'} onClick={onDetailClick}>
             جزییات
           </Button>
-          {noRegister && (
+          {noRegister && !isRegisterd && !isTeacher &&(
             <Button variant={"text"} onClick={(v) => setOpenUnReserve(true)} >
               لغو ثبت نام
             </Button>
           )}
           
-          {!noRegister && (
-            <Button variant={"outlined"} color={'primary'} >
+          {noRegister && isTeacher && (
+            <Button variant={"text"} onClick={(v) => setOpenUnReserve(true)} >
+              حذف کلاس
+            </Button>
+          )}
+          
+          {!noRegister && !isRegisterd && !isTeacher &&(
+            <Button variant={"outlined"} color={'primary'} onClick={(v) => setOpenReserve(true)} >
               ثبت نام
+            </Button>
+          )}
+          
+          {isRegisterd && !isTeacher && (
+            <Button disabled={true} variant={"outlined"} color={'primary'} >
+              ثبت نام شده
             </Button>
           )}
           

@@ -1,18 +1,13 @@
 const { query } = require('../boot')
 module.exports =  class ClazzModel {
 
-    createClass  = async ({ teacher_id , description , class_code , capasity , link , title,  department_id , university_id}) => {
+    static createClass  = async (teacher_id , { description , class_code , capasity , link , title,  department_id , university_id , password}) => {
       try {
-        const result = await query('INSERT INTO class_tb (teacher_tb_id , description , link , capacity , title , class_code , departmant_tb_id , university_tb_id) VALUES ($1 , $2 , $3 , $4 , $5 , $6 , $7 , $8) RETURNING id' , [teacher_id , description , link , capasity, title,  class_code , department_id , university_id]);
-
-        if(result.rows.length > 0) {
-          return {status: "success" , id: result.rows[0].id};
-        } else {
-          return {status: "error"};
-        }
+        const result = await query('INSERT INTO class_tb (teacher_tb_id , description , link , capacity , title , class_code , departmant_tb_id , university_tb_id , password) VALUES ($1 , $2 , $3 , $4 , $5 , $6 , $7 , $8 , $9) RETURNING id' , [teacher_id , description , link , capasity, title,  class_code , department_id , university_id , password]);
+        return result.rowCount > 0
       } catch(err) {
         console.log(err.message)
-        return {status: "error"};
+        return false
       }
     }
 
@@ -125,16 +120,17 @@ module.exports =  class ClazzModel {
         }
     }
 
-    removeClass  = async ({ teacher_id , class_id}) => {
+    static removeClass  = async ( teacherId , classId ) => {
       try {
-        const result = await this.db.pool.query("DELETE FROM class_tb WHERE class_tb.teacher_tb_id=$1 AND class_tb.id=$2;" , [teacher_id , class_id]);
-        if(result.rowCount > 0)
-          return {status: "success"};
-        else
-         return {status: "error"};
+        console.log(teacherId , classId)
+        const cleanReserved = await query("DELETE FROM class_reserved_tb WHERE class_reserved_tb.class_tb_id=(SELECT id FROM class_tb WHERE class_tb.teacher_tb_id=$1 AND class_tb.id=$2);" , [teacherId , classId]);
+        const cleanSession = await query("DELETE FROM session_tb WHERE session_tb.class_tb_id=(SELECT id FROM class_tb WHERE class_tb.teacher_tb_id=$1 AND class_tb.id=$2);" , [teacherId , classId]);
+        const result = await query("DELETE FROM class_tb WHERE class_tb.teacher_tb_id=$1 AND class_tb.id=$2;" , [teacherId , classId]);
+        return result.rowCount > 0 ;
       } catch(err) {
         console.log(err.message);
-        return {status: "error"};
-      }
+        return false
+      
+     }
     }
 }

@@ -1,23 +1,20 @@
-const { query } = require('../boot')
+const { query } = require('../boot');
+const { getStartTimes } = require('../service/Common');
 module.exports = class SessionModel {
 
     constructor(db) {
         this.moment = require('moment-jalaali');
     }
 
-    createSessionItem = async (class_id, date_id, time_id) => {
+    static createSessionItem = async ({name, date, timeId , classId}) => {
         try {
-            const result = await this.db.pool.query("INSERT INTO session_tb(class_tb_id, date_tb_id, time_tb_id) VALUES ($1 , $2 , $3) RETURNING id", [
-                class_id, date_id, time_id
+            const result = await  query("INSERT INTO session_tb(class_tb_id, date_tb_id, time_tb_id, name) VALUES ($1 , $2 , $3,$4) RETURNING id", [
+                classId, date, timeId , name
             ]);
-            if(result.rowCount > 0) {
-                return {status: 'success' , rows: result.rows[0].id}
-            } else {
-                return {status: 'error'}
-            }
+            return result.rowCount > 0 ? result.rows[0].id : false
         } catch (err) {
             console.log(err.message)
-            return {status: 'error'}
+            return false
         }
 
     }
@@ -42,7 +39,12 @@ module.exports = class SessionModel {
         }
     }
 
-    getAllSession = async ({class_id, date}) => {
+    static getTimeByDate = async ({classId, date}) => {
+        const isHaveDate = await query('SELECT id FROM date_tb WHERE dated=$1' , [date])
+        if(isHaveDate.rowCount  === 0) {
+            return 'FREE'
+        }
+
         const command = "SELECT university_capacity , class_capacity , dated , start FROM (SELECT *\n" +
             "FROM (SELECT *\n" +
             "      FROM (SELECT *\n" +
@@ -60,39 +62,20 @@ module.exports = class SessionModel {
             "WHERE dated = $2) sub7 ORDER BY start";
 
         try {
-            const result = await this.db.pool.query(command, [class_id, date]);
-            if (result.rowCount > 0) {
-                return {status: 'success', rows: result.rows}
-            } else {
-                return {status: 'empty'}
-            }
+            const result = await query(command, [classId, date]);
+            return result.rowCount > 0 ? result.rows : 'EMPTY'
         } catch (err) {
             console.log(err.message)
-            return {status: 'error'}
+            return false
         }
-    }
+    } 
+    
 
 
-    splitSessionAndTime = (sessionRows) => {
+    static splitSessionAndTime = (sessionRows) => {
         const university_capacity = sessionRows[0].university_capacity;
-        const times = [
-            {id: 1, time: "06:00:00", capacity: 0},
-            {id: 2, time: "07:00:00", capacity: 0},
-            {id: 3, time: "08:00:00", capacity: 0},
-            {id: 4, time: "09:00:00", capacity: 0},
-            {id: 5, time: "10:00:00", capacity: 0},
-            {id: 6, time: "11:00:00", capacity: 0},
-            {id: 7, time: "12:00:00", capacity: 0},
-            {id: 8, time: "13:00:00", capacity: 0},
-            {id: 9, time: "14:00:00", capacity: 0},
-            {id: 10, time: "15:00:00", capacity: 0},
-            {id: 11, time: "16:00:00", capacity: 0},
-            {id: 12, time: "17:00:00", capacity: 0},
-            {id: 13, time: "18:00:00", capacity: 0},
-            {id: 14, time: "19:00:00", capacity: 0},
-            {id: 15, time: "20:00:00", capacity: 0},
-            {id: 16, time: "21:00:00", capacity: 0}
-        ];
+        console.log(sessionRows)
+        const times = new Object(getStartTimes)
 
 
         sessionRows.forEach((sessionValue, index) => {
@@ -103,13 +86,8 @@ module.exports = class SessionModel {
             })
         });
 
-        times.forEach((time, index) => {
-            if (university_capacity <= time.capacity) {
-                times.splice(index, 1);
-            }
-        });
-
-        return times;
+        const timesAvailable = times.filter(time =>  university_capacity > time.capacity)
+        return timesAvailable;
     }
 
     removeSession = async ({session_id}) => {
@@ -125,4 +103,7 @@ module.exports = class SessionModel {
             return {status: 'error'}
         }
     }
+
+
+        
 }
