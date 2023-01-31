@@ -2,8 +2,8 @@
 -- PostgreSQL database dump
 --
 
--- Dumped from database version 13.2
--- Dumped by pg_dump version 13.2
+-- Dumped from database version 13.3
+-- Dumped by pg_dump version 13.3
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -169,7 +169,8 @@ CREATE TABLE public.class_tb (
     title character varying(200),
     class_code character varying(20),
     departmant_tb_id integer NOT NULL,
-    university_tb_id integer NOT NULL
+    university_tb_id integer NOT NULL,
+    password text
 );
 
 
@@ -283,7 +284,8 @@ CREATE TABLE public.session_tb (
     id integer NOT NULL,
     class_tb_id integer NOT NULL,
     date_tb_id integer NOT NULL,
-    time_tb_id integer NOT NULL
+    time_tb_id integer NOT NULL,
+    name text
 );
 
 
@@ -344,6 +346,82 @@ CREATE TABLE public.department_tb (
 
 
 ALTER TABLE public.department_tb OWNER TO postgres;
+
+--
+-- Name: device_student_tb; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.device_student_tb (
+    id integer NOT NULL,
+    "studentId" integer,
+    ip text,
+    token text,
+    "deviceName" text,
+    "lastAccess" timestamp with time zone
+);
+
+
+ALTER TABLE public.device_student_tb OWNER TO postgres;
+
+--
+-- Name: device_student_tb_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.device_student_tb_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.device_student_tb_id_seq OWNER TO postgres;
+
+--
+-- Name: device_student_tb_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.device_student_tb_id_seq OWNED BY public.device_student_tb.id;
+
+
+--
+-- Name: device_teacher_tb; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.device_teacher_tb (
+    id integer NOT NULL,
+    "teacherId" integer,
+    ip text,
+    token text,
+    "deviceName" text,
+    "lastAccess" timestamp with time zone
+);
+
+
+ALTER TABLE public.device_teacher_tb OWNER TO postgres;
+
+--
+-- Name: device_teacher_tb_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.device_teacher_tb_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.device_teacher_tb_id_seq OWNER TO postgres;
+
+--
+-- Name: device_teacher_tb_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.device_teacher_tb_id_seq OWNED BY public.device_teacher_tb.id;
+
 
 --
 -- Name: lesson_tb; Type: TABLE; Schema: public; Owner: postgres
@@ -448,7 +526,8 @@ CREATE TABLE public.student_tb (
     family character varying(30),
     email character varying(200) NOT NULL,
     password character varying(100) NOT NULL,
-    auth text
+    auth text,
+    createdat timestamp with time zone
 );
 
 
@@ -499,6 +578,42 @@ ALTER SEQUENCE public.study_tb_id_seq OWNED BY public.department_tb.id;
 
 
 --
+-- Name: teacher_access_department_tb; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.teacher_access_department_tb (
+    id integer NOT NULL,
+    university_id integer,
+    teacher_id integer,
+    department_id integer
+);
+
+
+ALTER TABLE public.teacher_access_department_tb OWNER TO postgres;
+
+--
+-- Name: teacher_access_department_tb_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.teacher_access_department_tb_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.teacher_access_department_tb_id_seq OWNER TO postgres;
+
+--
+-- Name: teacher_access_department_tb_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.teacher_access_department_tb_id_seq OWNED BY public.teacher_access_department_tb.id;
+
+
+--
 -- Name: teacher_tb; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -508,7 +623,8 @@ CREATE TABLE public.teacher_tb (
     name character varying(30),
     family character varying(30),
     email character varying(200) NOT NULL,
-    password character varying(100)
+    password character varying(100),
+    createdat timestamp with time zone
 );
 
 
@@ -602,6 +718,41 @@ ALTER TABLE public.type_university_id_seq OWNER TO postgres;
 --
 
 ALTER SEQUENCE public.type_university_id_seq OWNED BY public.type_university_tb.id;
+
+
+--
+-- Name: uni_reserved_teacher_tb; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.uni_reserved_teacher_tb (
+    id integer NOT NULL,
+    university integer NOT NULL,
+    teacher integer NOT NULL
+);
+
+
+ALTER TABLE public.uni_reserved_teacher_tb OWNER TO postgres;
+
+--
+-- Name: uni_reserved_teacher_tb_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.uni_reserved_teacher_tb_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.uni_reserved_teacher_tb_id_seq OWNER TO postgres;
+
+--
+-- Name: uni_reserved_teacher_tb_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.uni_reserved_teacher_tb_id_seq OWNED BY public.uni_reserved_teacher_tb.id;
 
 
 --
@@ -764,6 +915,20 @@ ALTER TABLE ONLY public.department_tb ALTER COLUMN id SET DEFAULT nextval('publi
 
 
 --
+-- Name: device_student_tb id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.device_student_tb ALTER COLUMN id SET DEFAULT nextval('public.device_student_tb_id_seq'::regclass);
+
+
+--
+-- Name: device_teacher_tb id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.device_teacher_tb ALTER COLUMN id SET DEFAULT nextval('public.device_teacher_tb_id_seq'::regclass);
+
+
+--
 -- Name: lesson_tb id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
@@ -799,6 +964,13 @@ ALTER TABLE ONLY public.student_tb ALTER COLUMN id SET DEFAULT nextval('public.s
 
 
 --
+-- Name: teacher_access_department_tb id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.teacher_access_department_tb ALTER COLUMN id SET DEFAULT nextval('public.teacher_access_department_tb_id_seq'::regclass);
+
+
+--
 -- Name: teacher_tb id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
@@ -817,6 +989,13 @@ ALTER TABLE ONLY public.time_tb ALTER COLUMN id SET DEFAULT nextval('public.time
 --
 
 ALTER TABLE ONLY public.type_university_tb ALTER COLUMN id SET DEFAULT nextval('public.type_university_id_seq'::regclass);
+
+
+--
+-- Name: uni_reserved_teacher_tb id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.uni_reserved_teacher_tb ALTER COLUMN id SET DEFAULT nextval('public.uni_reserved_teacher_tb_id_seq'::regclass);
 
 
 --
@@ -863,9 +1042,10 @@ COPY public.class_reserved_tb (id, student_tb_id, class_tb_id) FROM stdin;
 -- Data for Name: class_tb; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-COPY public.class_tb (id, description, teacher_tb_id, link, capacity, title, class_code, departmant_tb_id, university_tb_id) FROM stdin;
-6	با سلام و احترام خدمت شما دانشجویان \n	33	https://reactrouter.com/web/guides/quick-start	700	کلاس تغذیه	9877452	4	1
-4	با سلام و احترام خدمت شما دانشجویان \n	33	https://reactrouter.com/web/guides/quick-start	700	کلاس ریاضی	987745	4	1
+COPY public.class_tb (id, description, teacher_tb_id, link, capacity, title, class_code, departmant_tb_id, university_tb_id, password) FROM stdin;
+6	با سلام و احترام خدمت شما دانشجویان \n	33	https://reactrouter.com/web/guides/quick-start	700	کلاس تغذیه	9877452	4	1	\N
+4	با سلام و احترام خدمت شما دانشجویان \n	33	https://reactrouter.com/web/guides/quick-start	700	کلاس ریاضی	987745	4	1	\N
+7	بچه ها بزودی شروع میکنیم تا 21 تیر ماه صبر کنید 	46	https://pornhub.com	\N	ایلتس مقدماتی	222222	3	1	1111
 \.
 
 
@@ -899,6 +1079,23 @@ COPY public.department_tb (id, department_name) FROM stdin;
 
 
 --
+-- Data for Name: device_student_tb; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.device_student_tb (id, "studentId", ip, token, "deviceName", "lastAccess") FROM stdin;
+\.
+
+
+--
+-- Data for Name: device_teacher_tb; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.device_teacher_tb (id, "teacherId", ip, token, "deviceName", "lastAccess") FROM stdin;
+1	46	::1	eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjQ2LCJuYXRpb25hbENvZGUiOiI3Nzc3Nzc3NzciLCJlbWFpbCI6ImJhZ2hkc0BnbS5jb20iLCJpYXQiOjE2NzUxNjIyOTcsImV4cCI6MTY3Nzc1NDI5N30.D5r2Oopz1AbEa7Ae349O68jrCZdv_uXAnwxyy41VZmo	Win32	2023-01-31 02:51:37.472-08
+\.
+
+
+--
 -- Data for Name: lesson_tb; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
@@ -927,17 +1124,17 @@ COPY public.province_tb (id, name) FROM stdin;
 -- Data for Name: session_tb; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-COPY public.session_tb (id, class_tb_id, date_tb_id, time_tb_id) FROM stdin;
-1	4	5	1
-2	6	5	1
-3	6	6	5
-5	6	6	10
-6	6	6	1
-7	6	6	11
-10	6	4	1
-12	6	4	9
-13	4	8	6
-14	4	9	11
+COPY public.session_tb (id, class_tb_id, date_tb_id, time_tb_id, name) FROM stdin;
+1	4	5	1	\N
+2	6	5	1	\N
+3	6	6	5	\N
+5	6	6	10	\N
+6	6	6	1	\N
+7	6	6	11	\N
+10	6	4	1	\N
+12	6	4	9	\N
+13	4	8	6	\N
+14	4	9	11	\N
 \.
 
 
@@ -945,35 +1142,44 @@ COPY public.session_tb (id, class_tb_id, date_tb_id, time_tb_id) FROM stdin;
 -- Data for Name: student_tb; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-COPY public.student_tb (id, national_code, name, family, email, password, auth) FROM stdin;
-1	3950531319	????	????	hosseinzafari2000@gmail.com	1112	\N
-5	396154585	AliReza	Zafari	zafari@gmail.com	1112	\N
-10	2043201343	امیر	میرزایی	hossein10@gmail.com	1112	\N
-11	23434242	حسین 	ظفری	hossein100@gmail.com	LaFLExqd5NTmiKw	\N
-13	0965584872	حسین 	ظفری 	hossein0050@gmail.com	111213	\N
-14	39560501245	باقر	باقریان اسفندانی 	bagher@gmail.com	$2b$07$H7mGoF3bPs3OFy17CUKppOoaGI898QKdkcEyxTdHaENQXvZuvqKDK	\N
-15	222255577	رضا 	ترابی 	reza@gmail.com0	$2b$07$ay5XcYK0CGfmvjv7Sn3l4eAJIK7OKW8TUGv6./GNWp0rrReIcEI2u	\N
-16	8498222422	حسین 	ظفری	hsossein@gmail.com	$2b$07$bbqBrPyMdGPMxzk5s6gIjOPZtLHcEACT7ynCOlYnq8oLoxX3yJShW	\N
-17	2894292222	hossein 	zafr	hoss@gmail.com	$2b$07$m8b0fceEiXHndqF6gBeK..2KKhCc/Hm3ZuFiQG0d/X4Gpyi17zBDq	\N
-18	224224242	ssfsf	swfw3	hossein@gmail.com	$2b$07$OMk7/beuFppysViE5H7Nk.fN5KALfyLJuG6KehBI4/Ui/NCH.EC/W	\N
-19	2424122312	sffsf	wwwwfwf	ho24ssein@gmail.com	$2b$07$S8h6fJf4AKB..FvwDyqhVeiHQvF6QzQD2Q14ruCvNfJyLhy3mOr7q	\N
-22	234242342343	sfsff	wrwrww	ho24ss2224224ein@gmail.com	$2b$07$sE0OSJSYbEWG/x7yB1lF.ugN8lGTlFnQ9DWAhAo35ot9pTa0mU0Ie	\N
-23	122224242	ssfwefwfw	wfwfwfwf	ho2wfwfww4ssein@gmail.com	$2b$07$NDaGDTWIm0fVFwQjn.fgq.RmkT7sHuUSzGI2XLlquDv1haVBBSJvO	\N
-24	98238242422	hfsuifsfis	suisfisbf	hfww2o24ssein@gmail.com	$2b$07$bGhDFnnRDCdAA9fUBHD6GuxHP6kZkjW5jgkE8/p2ObouV6W30TVIu	\N
-25	123141516	ali 	zafari	alizafari@gmail.com	$2b$07$mHElP5QmhZ/A3Qcs4ogb3eev5hi9o8IOQXxfX53As9/kYumzGuzXu	\N
-26	2434342	sfwfwf	sfffwf	aliwfwzafari@gmail.com	$2b$07$vnI3nASbUSCLuCBajHdF3eo5ap.RJSbLwnciy1NluO4rC51B9L2Iu	\N
-27	242424242	fsfsf	wfwfwf	alizw34232afari@gmail.com	$2b$07$tF/lL13nkESj.7CShCR4v.wT.Qgrz7XC8weVLKHC7.bPsSB57.VMq	\N
-30	43423423424	ffsfsf	sfsffw	alizasfsfwfari@gmail.com	$2b$07$IulmjXnWzbRoYRZwvyhqj.iCI4NXYLuyDVm1qGLeLgUpMzPbuwaUi	\N
-31	398434292224	hossein 	molaiie	hossemolaii@gmail.com	$2b$07$dkOx1r4x4UfVAT09p4jsgufdp.7R705B.vMX8aZUvsA6QcgQAX05O	\N
-32	2341223423	sdffsifb	uisbsffbsi	alsfsfsuisbizafari@gmail.com	$2b$07$uTnbNGemwIz4N4VtC8MBTOvHLgsymW9eYJNYQza6TLieIIbt5rR7K	\N
-33	11121112	حسین 	ظفری	zafar10@gmail.com	hossein1112	\N
-34	11111111	ssf	fisjsss	ali12zafari@gmail.com	141414	\N
-35	55555555	amo zafar	zafariii	alisfs12zafari@gmail.com	111213	\N
-37	9999999998	hossein	sfssfss	ho7se@gmail.com	123456	\N
-38	35353535	امیر	حیدری	zafari100@gmail.com	$2b$07$eBXfPSkdMM2l0q/sWnn3auSArO5iPaCVj1o0TijDYVHTf5feGalki	\N
-39	56565656	رضا	حیدری	hossein@gmail.info	$2b$07$IbcfaceYEST2tAU.QCp51ORYYLJIspVGkOmQyxaRYXCte2IHZEtdu	\N
-40	96969696	حسین 	ظفری 	zafari20@gmail.com	$2b$07$rOhLuyeKmBvb4X2e4oZWkeFSp0XH2glI9f.9cIMVBIifHQXJJCXlC	\N
-41	99995555	hossein 	zafari	hosseinooo@gmail.com	$2b$07$CR59xoqt9xIGxVDnDt/EouVHniR5NUwxSgh12Ks2YekCvEqbba.3O	\N
+COPY public.student_tb (id, national_code, name, family, email, password, auth, createdat) FROM stdin;
+1	3950531319	????	????	hosseinzafari2000@gmail.com	1112	\N	\N
+5	396154585	AliReza	Zafari	zafari@gmail.com	1112	\N	\N
+10	2043201343	امیر	میرزایی	hossein10@gmail.com	1112	\N	\N
+11	23434242	حسین 	ظفری	hossein100@gmail.com	LaFLExqd5NTmiKw	\N	\N
+13	0965584872	حسین 	ظفری 	hossein0050@gmail.com	111213	\N	\N
+14	39560501245	باقر	باقریان اسفندانی 	bagher@gmail.com	$2b$07$H7mGoF3bPs3OFy17CUKppOoaGI898QKdkcEyxTdHaENQXvZuvqKDK	\N	\N
+15	222255577	رضا 	ترابی 	reza@gmail.com0	$2b$07$ay5XcYK0CGfmvjv7Sn3l4eAJIK7OKW8TUGv6./GNWp0rrReIcEI2u	\N	\N
+16	8498222422	حسین 	ظفری	hsossein@gmail.com	$2b$07$bbqBrPyMdGPMxzk5s6gIjOPZtLHcEACT7ynCOlYnq8oLoxX3yJShW	\N	\N
+17	2894292222	hossein 	zafr	hoss@gmail.com	$2b$07$m8b0fceEiXHndqF6gBeK..2KKhCc/Hm3ZuFiQG0d/X4Gpyi17zBDq	\N	\N
+18	224224242	ssfsf	swfw3	hossein@gmail.com	$2b$07$OMk7/beuFppysViE5H7Nk.fN5KALfyLJuG6KehBI4/Ui/NCH.EC/W	\N	\N
+19	2424122312	sffsf	wwwwfwf	ho24ssein@gmail.com	$2b$07$S8h6fJf4AKB..FvwDyqhVeiHQvF6QzQD2Q14ruCvNfJyLhy3mOr7q	\N	\N
+22	234242342343	sfsff	wrwrww	ho24ss2224224ein@gmail.com	$2b$07$sE0OSJSYbEWG/x7yB1lF.ugN8lGTlFnQ9DWAhAo35ot9pTa0mU0Ie	\N	\N
+23	122224242	ssfwefwfw	wfwfwfwf	ho2wfwfww4ssein@gmail.com	$2b$07$NDaGDTWIm0fVFwQjn.fgq.RmkT7sHuUSzGI2XLlquDv1haVBBSJvO	\N	\N
+24	98238242422	hfsuifsfis	suisfisbf	hfww2o24ssein@gmail.com	$2b$07$bGhDFnnRDCdAA9fUBHD6GuxHP6kZkjW5jgkE8/p2ObouV6W30TVIu	\N	\N
+25	123141516	ali 	zafari	alizafari@gmail.com	$2b$07$mHElP5QmhZ/A3Qcs4ogb3eev5hi9o8IOQXxfX53As9/kYumzGuzXu	\N	\N
+26	2434342	sfwfwf	sfffwf	aliwfwzafari@gmail.com	$2b$07$vnI3nASbUSCLuCBajHdF3eo5ap.RJSbLwnciy1NluO4rC51B9L2Iu	\N	\N
+27	242424242	fsfsf	wfwfwf	alizw34232afari@gmail.com	$2b$07$tF/lL13nkESj.7CShCR4v.wT.Qgrz7XC8weVLKHC7.bPsSB57.VMq	\N	\N
+30	43423423424	ffsfsf	sfsffw	alizasfsfwfari@gmail.com	$2b$07$IulmjXnWzbRoYRZwvyhqj.iCI4NXYLuyDVm1qGLeLgUpMzPbuwaUi	\N	\N
+31	398434292224	hossein 	molaiie	hossemolaii@gmail.com	$2b$07$dkOx1r4x4UfVAT09p4jsgufdp.7R705B.vMX8aZUvsA6QcgQAX05O	\N	\N
+32	2341223423	sdffsifb	uisbsffbsi	alsfsfsuisbizafari@gmail.com	$2b$07$uTnbNGemwIz4N4VtC8MBTOvHLgsymW9eYJNYQza6TLieIIbt5rR7K	\N	\N
+33	11121112	حسین 	ظفری	zafar10@gmail.com	hossein1112	\N	\N
+34	11111111	ssf	fisjsss	ali12zafari@gmail.com	141414	\N	\N
+35	55555555	amo zafar	zafariii	alisfs12zafari@gmail.com	111213	\N	\N
+37	9999999998	hossein	sfssfss	ho7se@gmail.com	123456	\N	\N
+38	35353535	امیر	حیدری	zafari100@gmail.com	$2b$07$eBXfPSkdMM2l0q/sWnn3auSArO5iPaCVj1o0TijDYVHTf5feGalki	\N	\N
+39	56565656	رضا	حیدری	hossein@gmail.info	$2b$07$IbcfaceYEST2tAU.QCp51ORYYLJIspVGkOmQyxaRYXCte2IHZEtdu	\N	\N
+40	96969696	حسین 	ظفری 	zafari20@gmail.com	$2b$07$rOhLuyeKmBvb4X2e4oZWkeFSp0XH2glI9f.9cIMVBIifHQXJJCXlC	\N	\N
+41	99995555	hossein 	zafari	hosseinooo@gmail.com	$2b$07$CR59xoqt9xIGxVDnDt/EouVHniR5NUwxSgh12Ks2YekCvEqbba.3O	\N	\N
+\.
+
+
+--
+-- Data for Name: teacher_access_department_tb; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.teacher_access_department_tb (id, university_id, teacher_id, department_id) FROM stdin;
+1	1	46	3
 \.
 
 
@@ -981,13 +1187,14 @@ COPY public.student_tb (id, national_code, name, family, email, password, auth) 
 -- Data for Name: teacher_tb; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-COPY public.teacher_tb (id, national_code, name, family, email, password) FROM stdin;
-1	1234421124	hossein	zafari	hossein@gamil.com	ioisfsiofi
-20	1167745124	resszsfaa	heydasfasfri	reqsasszsa@gamil.com	1112
-16	444444444	Hossein	Zafari	reqsasza@gamil.com	1112
-17	1167725124	resszsfaa	heydasfasfri	ali@gmail.com	1112
-21	124910342	ali	rezaii	ali10@gmail.com	1112
-33	55555555	حسین 	ظفری	hos@gamil.com	$2b$07$p/2Vgqb2e.IgkrOjEwMrBOVSrNrylU51FoRxdB9mKCP97BdksTRwC
+COPY public.teacher_tb (id, national_code, name, family, email, password, createdat) FROM stdin;
+1	1234421124	hossein	zafari	hossein@gamil.com	ioisfsiofi	\N
+20	1167745124	resszsfaa	heydasfasfri	reqsasszsa@gamil.com	1112	\N
+16	444444444	Hossein	Zafari	reqsasza@gamil.com	1112	\N
+17	1167725124	resszsfaa	heydasfasfri	ali@gmail.com	1112	\N
+21	124910342	ali	rezaii	ali10@gmail.com	1112	\N
+33	55555555	حسین 	ظفری	hos@gamil.com	$2b$07$p/2Vgqb2e.IgkrOjEwMrBOVSrNrylU51FoRxdB9mKCP97BdksTRwC	\N
+46	777777777	hossein	nousrati	baghds@gm.com	$2b$07$n2YLiRnRWMQg.l2Oe7rDkOwy/ct80q197QwlrEuVpDl3UtsCMVXe.	2023-01-31 02:51:37.406-08
 \.
 
 
@@ -1021,6 +1228,18 @@ COPY public.time_tb (id, start) FROM stdin;
 
 COPY public.type_university_tb (id, name) FROM stdin;
 1	فنی حرفه ای 
+\.
+
+
+--
+-- Data for Name: uni_reserved_teacher_tb; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.uni_reserved_teacher_tb (id, university, teacher) FROM stdin;
+1	1	43
+2	1	44
+3	1	45
+4	1	46
 \.
 
 
@@ -1079,7 +1298,7 @@ SELECT pg_catalog.setval('public.class_tb_departmant_tb_id_seq', 1, false);
 -- Name: class_tb_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.class_tb_id_seq', 6, true);
+SELECT pg_catalog.setval('public.class_tb_id_seq', 7, true);
 
 
 --
@@ -1108,6 +1327,20 @@ SELECT pg_catalog.setval('public.date_tb_id_seq', 14, true);
 --
 
 SELECT pg_catalog.setval('public.date_tb_id_seq1', 9, true);
+
+
+--
+-- Name: device_student_tb_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.device_student_tb_id_seq', 1, false);
+
+
+--
+-- Name: device_teacher_tb_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.device_teacher_tb_id_seq', 1, true);
 
 
 --
@@ -1146,10 +1379,17 @@ SELECT pg_catalog.setval('public.study_tb_id_seq', 6, true);
 
 
 --
+-- Name: teacher_access_department_tb_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.teacher_access_department_tb_id_seq', 1, false);
+
+
+--
 -- Name: teacher_tb_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.teacher_tb_id_seq', 33, true);
+SELECT pg_catalog.setval('public.teacher_tb_id_seq', 46, true);
 
 
 --
@@ -1164,6 +1404,13 @@ SELECT pg_catalog.setval('public.time_tb_id_seq', 16, true);
 --
 
 SELECT pg_catalog.setval('public.type_university_id_seq', 1, true);
+
+
+--
+-- Name: uni_reserved_teacher_tb_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.uni_reserved_teacher_tb_id_seq', 4, true);
 
 
 --
@@ -1217,6 +1464,22 @@ ALTER TABLE ONLY public.class_tb
 
 ALTER TABLE ONLY public.date_tb
     ADD CONSTRAINT date_tb_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: device_student_tb device_student_tb_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.device_student_tb
+    ADD CONSTRAINT device_student_tb_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: device_teacher_tb device_teacher_tb_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.device_teacher_tb
+    ADD CONSTRAINT device_teacher_tb_pkey PRIMARY KEY (id);
 
 
 --
@@ -1313,6 +1576,14 @@ ALTER TABLE ONLY public.time_tb
 
 ALTER TABLE ONLY public.type_university_tb
     ADD CONSTRAINT type_university_tb_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: uni_reserved_teacher_tb uni_reserved_teacher_tb_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.uni_reserved_teacher_tb
+    ADD CONSTRAINT uni_reserved_teacher_tb_pkey PRIMARY KEY (id);
 
 
 --
