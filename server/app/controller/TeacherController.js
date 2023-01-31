@@ -81,29 +81,35 @@ const teacherRegister = async (req , res , next) => {
     return
   }
   
+  console.log("before userCreated")
   const userCreated = await userModel.createTeacher(req.body , new Date())
   if (!userCreated) {
     simpleError('مشکلی در ثبت نام وجود دارد لطفا بعدا امتحان کنید' , 403 , next)
     return
   }
+  console.log(validQrcode.id)
   
+  console.log("before reservedCrated")
   const reservedCreated = await universityModel.addUniversityReserveForTeacher(userCreated, validQrcode.id)
   if (!reservedCreated) {
     simpleError('مشکلی در ثبت نام وجود دارد لطفا بعدا امتحان کنید' , 500 , next)
     return
   }
   
+  console.log("before token")
   const token = await sign({
     userId: userCreated,
     nationalCode: req.body.nationalCode,
     email: req.body.email
   })
+  console.log("before isCresatedDevice")
   const isCreatedDevice = await DeviceModel.newDeviceTeacher(userCreated, req.ip, token, req.body.deviceModel, new Date())
   if (!isCreatedDevice) {
     simpleError('مشکلی در شناسایی دستگاه شما وجود دارد لطفا بعدا لاگین فرمایید' , 403 , next)
     return
   }
   
+  console.log("end")
   res.status(202).send({
     status: 'success',
     msg: "به پنل کاربری خود خوش آمدید" ,

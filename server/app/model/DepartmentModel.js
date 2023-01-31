@@ -6,7 +6,7 @@ module.exports = class DepartmentModel {
             const result = await query(" SELECT * FROM teacher_access_department_tb  JOIN department_tb ON teacher_access_department_tb.department_id=department_tb.id WHERE teacher_id=$1 AND university_id=$2 " , [teacherId , universityId]);
             return result.rowCount > 0 ? result.rows : "NOT_FOUND"
         } catch (err) {
-            console.log(err.message);
+            console.log(err.message); 
             return false
         }
     }
@@ -20,7 +20,7 @@ module.exports = class DepartmentModel {
                 if(result.rowCount > 0) {
                     return true
                 } else
-                    return false
+                    return false 
             } else {
                 return "WRONG_QRCODE"
             }

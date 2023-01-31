@@ -22,16 +22,15 @@ module.exports = class UniversityModel {
         }
     }
     
-    static addUniversityReserveForTeacher = async (teacherId  , password) => {
+     addUniversityReserveForTeacher = async (teacherId  , id) => {
         try {
-            const isValidPassword = await query("SELECT * FROM university_tb WHERE qrcode=$1" , [password])
-            const isExistsUniversity = await query("SELECT id FROM uni_reserved_teacher_tb WHERE uni_reserved_teacher_tb.universityid=$1 AND uni_reserved_teacher_tb.teacherid=$2" , [isValidPassword.rows[0].id , teacherId])
+            const isExistsUniversity = await query("SELECT id FROM uni_reserved_teacher_tb WHERE uni_reserved_teacher_tb.university=$1 AND uni_reserved_teacher_tb.teacher=$2" , [id , teacherId])
             if(isExistsUniversity.rowCount !== 0) {
                 return "CONFLICT"
             }
             
-            if(isValidPassword.rowCount > 0 ){
-                const result = await query("INSERT INTO uni_reserved_teacher_tb (teacherid, universityid ) VALUES ($1 , $2) RETURNING id " , [teacherId , isValidPassword.rows[0].id])
+            if(id != null && id > 0  ){
+                const result = await query("INSERT INTO uni_reserved_teacher_tb (teacher, university) VALUES ($1 , $2) RETURNING id " , [teacherId , id])
                 return result.count !== 0
             } else {
                 return "WRONG_PASSWORD"
@@ -69,7 +68,7 @@ module.exports = class UniversityModel {
     
     static getUniversityByTeacherId = async (teacherId) => {
         try {
-            const result = await query("SELECT university_tb.id,university_tb.name,university_tb.capacity FROM university_tb JOIN uni_reserved_teacher_tb ON university_tb.id = uni_reserved_teacher_tb.universityid WHERE uni_reserved_teacher_tb.teacherid=$1; " , [teacherId]);
+            const result = await query("SELECT university_tb.id,university_tb.name,university_tb.capacity FROM university_tb JOIN uni_reserved_teacher_tb ON university_tb.id = uni_reserved_teacher_tb.university WHERE uni_reserved_teacher_tb.teacher=$1; " , [teacherId]);
             return result.rowCount > 0 ? result.rows : false
         } catch (err) {
             console.log(err.message);
